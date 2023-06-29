@@ -12,7 +12,6 @@ import { useSelector } from "react-redux";
 
 const PrayersByTag = ({ navigation, route }) => {
   const theme = useSelector((state) => state.switch);
-  //console.log(route.params.data, ":::STATETTTT");
   const prayerList = route.params.data;
   const BadgeIcon = withBadge(0)(Icon);
 
@@ -71,7 +70,14 @@ const PrayersByTag = ({ navigation, route }) => {
                   />
                 </View>
                 <View style={{ marginLeft: 20, paddingRight: 30 }}>
-                  <Text style={styles.username}>{prayer.user}</Text>
+                  <Text
+                    style={{
+                      ...styles.username,
+                      color: theme.theme === "light" ? "#000000" : "#ffffff",
+                    }}
+                  >
+                    {prayer.user}
+                  </Text>
                   <Text style={styles.when}>{prayer.time}</Text>
                   <TouchableOpacity
                     onPress={() =>
@@ -103,7 +109,15 @@ const PrayersByTag = ({ navigation, route }) => {
                         />
                       </TouchableOpacity>
 
-                      <Text style={{ marginLeft: 5 }}>{prayer.likes}</Text>
+                      <Text
+                        style={{
+                          marginLeft: 5,
+                          color:
+                            theme.theme === "light" ? "#000000" : "#ffffff",
+                        }}
+                      >
+                        {prayer.likes}
+                      </Text>
                     </View>
 
                     <View
@@ -120,7 +134,14 @@ const PrayersByTag = ({ navigation, route }) => {
                         size={26}
                       />
 
-                      <Text style={{ marginLeft: 5, marginTop: 5 }}>
+                      <Text
+                        style={{
+                          marginLeft: 5,
+                          marginTop: 5,
+                          color:
+                            theme.theme === "light" ? "#000000" : "#ffffff",
+                        }}
+                      >
                         {prayer.replies}
                       </Text>
                     </View>
@@ -141,7 +162,15 @@ const PrayersByTag = ({ navigation, route }) => {
                         />
                       </TouchableOpacity>
 
-                      <Text style={{ marginLeft: 10 }}>Prayer with me</Text>
+                      <Text
+                        style={{
+                          marginLeft: 10,
+                          color:
+                            theme.theme === "light" ? "#000000" : "#ffffff",
+                        }}
+                      >
+                        Prayer with me
+                      </Text>
                     </View>
                   </View>
                 </View>

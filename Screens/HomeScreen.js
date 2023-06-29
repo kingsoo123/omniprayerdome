@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { Icon, withBadge, Avatar } from "react-native-elements";
 import { useSelector } from "react-redux";
-import Constants from "expo-constants";
 
 const tagsPrayer = [
   { title: "Deliverance", id: 0 },
@@ -102,7 +101,6 @@ const prayerList = [
 
 const HomeScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.switch);
-  console.log(theme.theme, ":::STATETTTT");
 
   const BadgeIcon = withBadge(0)(Icon);
 

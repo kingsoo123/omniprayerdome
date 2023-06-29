@@ -5,10 +5,30 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
-import { Icon, Button } from "react-native-elements";
+import React, { useState } from "react";
+import { Icon } from "react-native-elements";
+import { auth } from "../firebase/firebase-config";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const RegisterScreen = ({ navigation }) => {
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+    username: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleSubmit = () => {
+    createUserWithEmailAndPassword(auth, userData.email, userData.password)
+      .then((userCred) => {
+        const user = userCred.user;
+        console.log(user, "USER");
+      })
+      .catch((error) => {
+        console.log(error.message, "ERROR");
+        setError(`Email already used`);
+      });
+  };
   return (
     <View style={styles.container}>
       <View style={styles.topView}>
@@ -34,6 +54,10 @@ const RegisterScreen = ({ navigation }) => {
               placeholder="Name"
               style={{ marginLeft: 10, flex: 1 }}
               underlineColorAndroid="transparent"
+              onChangeText={(text) => {
+                setError("");
+                setUserData({ ...userData, username: text });
+              }}
             />
           </View>
           <View
@@ -52,6 +76,10 @@ const RegisterScreen = ({ navigation }) => {
               placeholder="Email"
               style={{ marginLeft: 10, flex: 1 }}
               underlineColorAndroid="transparent"
+              onChangeText={(text) => {
+                setUserData({ ...userData, email: text });
+                setError("");
+              }}
             />
           </View>
           <View
@@ -65,6 +93,10 @@ const RegisterScreen = ({ navigation }) => {
               placeholder="Password"
               style={{ marginLeft: 10, flex: 1 }}
               underlineColorAndroid="transparent"
+              onChangeText={(text) => {
+                setUserData({ ...userData, password: text });
+                setError("");
+              }}
             />
             <Icon
               name="visibility-off"
@@ -72,9 +104,7 @@ const RegisterScreen = ({ navigation }) => {
               iconStyle={{ color: "#1895b9" }}
             />
           </View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("DrawerNavigator")}
-          >
+          <TouchableOpacity onPress={() => handleSubmit()}>
             <View
               style={{
                 ...styles.button1,
@@ -104,10 +134,14 @@ const RegisterScreen = ({ navigation }) => {
           }}
         >
           <Text style={{ fontWeight: "500" }}>Have an account?</Text>
+
           <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
             <Text style={{ color: "#1895b9" }}> Login</Text>
           </TouchableOpacity>
         </View>
+        <Text style={{ marginTop: 40, color: "red", textAlign: "center" }}>
+          {error}
+        </Text>
       </View>
     </View>
   );

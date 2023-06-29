@@ -49,7 +49,14 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
               />
             </View>
             <View style={{ marginLeft: 20, paddingRight: 30 }}>
-              <Text style={styles.username}>{single?.user}</Text>
+              <Text
+                style={{
+                  ...styles.username,
+                  color: theme.theme === "light" ? "#000000" : "#ffffff",
+                }}
+              >
+                {single?.user}
+              </Text>
               <Text style={styles.when}>{single?.time}</Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate("SinglePrayerRequestScreen")}

@@ -4,6 +4,9 @@ import { View, Text, StyleSheet, Switch, TouchableOpacity } from "react-native";
 import { Icon, Avatar } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
 import { lightAction, darkAction } from "../Slice/SwitchTheme";
+import { logOut } from "../Slice/AuthSlice";
+import { auth } from "../firebase/firebase-config";
+import { signOut } from "firebase/auth";
 
 const DrawerContent = (props) => {
   const dispatch = useDispatch();
@@ -18,6 +21,18 @@ const DrawerContent = (props) => {
     } else {
       dispatch(lightAction());
     }
+  };
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("Sign-out successful.");
+        dispatch(logOut());
+      })
+      .catch((error) => {
+        // An error happened.
+        console.log("An error happened.");
+      });
   };
 
   return (
@@ -102,17 +117,20 @@ const DrawerContent = (props) => {
         </View>
       </DrawerContentScrollView>
 
-      <DrawerItem
-        label="Sign out"
-        icon={({ color, size }) => (
-          <Icon
-            type="material-community"
-            name="logout-variant"
-            color={color}
-            size={size}
-          />
-        )}
-      />
+      <TouchableOpacity>
+        <DrawerItem
+          label="Sign out"
+          icon={({ color, size }) => (
+            <Icon
+              type="material-community"
+              name="logout-variant"
+              color={color}
+              size={size}
+            />
+          )}
+          onPress={() => handleSignOut()}
+        />
+      </TouchableOpacity>
     </View>
   );
 };

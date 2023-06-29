@@ -5,10 +5,31 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Icon } from "react-native-elements";
+import { auth } from "../firebase/firebase-config";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { signIn } from "../Slice/AuthSlice";
 
 const LoginScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleSubmit = () => {
+    signInWithEmailAndPassword(auth, userData.email, userData.password)
+      .then((userCred) => {
+        const user = userCred.user;
+        dispatch(signIn());
+      })
+      .catch((error) => {
+        setError(`Check the info you typed`);
+      });
+  };
   return (
     <View style={styles.container}>
       <View style={styles.topView}>
@@ -29,11 +50,19 @@ const LoginScreen = ({ navigation }) => {
               name="email"
               type="material"
               iconStyle={{ color: "#1895b9" }}
+              onChangeText={(text) => {
+                //setError("");
+                setUserData({ ...userData, email: text });
+              }}
             />
             <TextInput
               placeholder="Email"
               style={{ marginLeft: 10, flex: 1 }}
               underlineColorAndroid="transparent"
+              onChangeText={(text) => {
+                setError("");
+                setUserData({ ...userData, email: text });
+              }}
             />
           </View>
           <View
@@ -47,6 +76,10 @@ const LoginScreen = ({ navigation }) => {
               placeholder="Password"
               style={{ marginLeft: 10, flex: 1 }}
               underlineColorAndroid="transparent"
+              onChangeText={(text) => {
+                setError("");
+                setUserData({ ...userData, password: text });
+              }}
             />
             <Icon
               name="visibility-off"
@@ -67,24 +100,26 @@ const LoginScreen = ({ navigation }) => {
               Forgot password?
             </Text>
           </View>
-          <View
-            style={{
-              ...styles.button1,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
+          <TouchableOpacity onPress={() => handleSubmit()}>
+            <View
               style={{
-                fontWeight: "500",
-                color: "#ffffff",
-                fontSize: 20,
+                ...styles.button1,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              Login
-            </Text>
-          </View>
+              <Text
+                style={{
+                  fontWeight: "500",
+                  color: "#ffffff",
+                  fontSize: 20,
+                }}
+              >
+                Login
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -101,6 +136,9 @@ const LoginScreen = ({ navigation }) => {
             <Text style={{ color: "#1895b9" }}> Register</Text>
           </TouchableOpacity>
         </View>
+        <Text style={{ marginTop: 40, color: "red", textAlign: "center" }}>
+          {error}
+        </Text>
       </View>
     </View>
   );
