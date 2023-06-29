@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React from "react";
-import { Icon, Button } from "react-native-elements";
+import { Icon } from "react-native-elements";
 
 const LoginScreen = ({ navigation }) => {
   return (

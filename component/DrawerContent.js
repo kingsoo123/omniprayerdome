@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { View, Text, StyleSheet, Switch } from "react-native";
 import { Icon, Avatar } from "react-native-elements";
+import { useSelector, useDispatch } from "react-redux";
+import { lightAction, darkAction } from "../Slice/SwitchTheme";
 
 const DrawerContent = (props) => {
+  const dispatch = useDispatch();
+  const theme = useSelector((state) => state.switch);
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
+    if (theme.theme === "light") {
+      dispatch(darkAction());
+    } else {
+      dispatch(lightAction());
+    }
+  };
+
   return (
     <View style={styles.container}>
       <DrawerContentScrollView {...props}>
@@ -36,7 +51,10 @@ const DrawerContent = (props) => {
           </View>
         </View>
 
-        {[{ name: "Settings", iconName: "cog-outline" }].map((item, id) => (
+        {[
+          { name: "Home", iconName: "home" },
+          { name: "Settings", iconName: "cog-outline" },
+        ].map((item, id) => (
           <DrawerItem
             label={item.name}
             icon={({ color, size }) => (
@@ -60,11 +78,15 @@ const DrawerContent = (props) => {
         >
           <Text style={styles.preferences}>Preferences</Text>
           <View style={styles.switchText}>
-            <Text style={styles.darkThemeText}>Dark theme</Text>
+            <Text style={styles.darkThemeText}>
+              {theme.theme === "light" ? "Dark theme" : "Light theme"}
+            </Text>
             <View style={{ paddingRight: 10 }}>
               <Switch
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={!true ? "#f5dd4b" : "#f4f3f4"}
+                trackColor={{ false: "#767577", true: "#1895b9" }}
+                thumbColor={!true ? "#1895b9" : "#ffffff"}
+                onValueChange={toggleSwitch}
+                value={isEnabled}
               />
             </View>
           </View>
