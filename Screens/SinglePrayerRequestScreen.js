@@ -2,8 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
-  Image,
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView,

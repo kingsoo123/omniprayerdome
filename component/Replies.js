@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 const Replies = ({ signle }) => {
   const theme = useSelector((state) => state.switch);
   const commenters = signle?.responses;
-  console.log(signle?.responses, "PROPPSSSS....");
+  //console.log(signle?.responses, "PROPPSSSS....");
 
   return (
     <View>
@@ -42,11 +42,11 @@ const Replies = ({ signle }) => {
               </Text>
               <Text style={styles.when}>{comment?.time}</Text>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("SinglePrayerRequestScreen", {
-                    data: item,
-                  })
-                }
+              // onPress={() =>
+              //   navigation.navigate("SinglePrayerRequestScreen", {
+              //     data: item,
+              //   })
+              // }
               >
                 <Text style={styles.prayerRequest}>{comment?.request}</Text>
               </TouchableOpacity>

@@ -7,7 +7,7 @@ export default function App() {
   return (
     <>
       <Provider store={store}>
-        <StatusBar barStyle="light-content" backgroundColor={"white"} />
+        <StatusBar barStyle="dark-content" backgroundColor={"white"} />
         <NavigationScreens />
       </Provider>
     </>

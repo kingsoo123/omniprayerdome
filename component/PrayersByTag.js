@@ -4,126 +4,35 @@ import {
   Text,
   View,
   SafeAreaView,
-  Image,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
 } from "react-native";
 import { Icon, withBadge, Avatar } from "react-native-elements";
 import { useSelector } from "react-redux";
-import Constants from "expo-constants";
 
-const tagsPrayer = [
-  { title: "Deliverance", id: 0 },
-  { title: "Miracles", id: 1 },
-  { title: "Healing", id: 2 },
-  { title: "Increase", id: 3 },
-  { title: "Breakthrough", id: 4 },
-  { title: "Salvation", id: 5 },
-  { title: "Fruitfulness", id: 6 },
-  { title: "Mercy", id: 7 },
-  { title: "Faithfulness", id: 8 },
-  { title: "Loving kindness", id: 9 },
-  { title: "Forgiveness", id: 10 },
-  { title: "Testimonies", id: 11 },
-];
-
-const prayerList = [
-  {
-    user: "John",
-    time: "2h ago",
-    request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-    likes: "230",
-    replies: "20",
-    responses: [
-      {
-        user: "John",
-        time: "2h ago",
-        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-        likes: "230",
-        replies: "20",
-      },
-    ],
-    id: 0,
-  },
-
-  {
-    user: "Thomas",
-    time: "2h ago",
-    request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-    likes: "230",
-    replies: "20",
-    responses: [
-      {
-        user: "John",
-        time: "2h ago",
-        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-        likes: "230",
-        replies: "20",
-      },
-    ],
-    id: 1,
-  },
-  {
-    user: "Steven",
-    time: "2h ago",
-    request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-    likes: "230",
-    replies: "20",
-    responses: [
-      {
-        user: "John",
-        time: "2h ago",
-        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-        likes: "230",
-        replies: "20",
-      },
-    ],
-    id: 2,
-  },
-  {
-    user: "Chris",
-    time: "2h ago",
-    request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-    likes: "230",
-    replies: "20",
-    responses: [
-      {
-        user: "John",
-        time: "2h ago",
-        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-        likes: "230",
-        replies: "20",
-      },
-    ],
-    id: 3,
-  },
-];
-
-const HomeScreen = ({ navigation }) => {
+const PrayersByTag = ({ navigation, route }) => {
   const theme = useSelector((state) => state.switch);
-  console.log(theme.theme, ":::STATETTTT");
-
+  //console.log(route.params.data, ":::STATETTTT");
+  const prayerList = route.params.data;
   const BadgeIcon = withBadge(0)(Icon);
 
   return (
     <SafeAreaView
-      style={{
-        ...styles.container,
-        backgroundColor: theme.theme === "light" ? "#ffffff" : "#000000",
-      }}
+      style={
+        (styles.container,
+        {
+          backgroundColor: theme.theme === "light" ? "#ffffff" : "#000000",
+        })
+      }
     >
       <View style={styles.headerView}>
         <Icon
-          name="menu"
+          name="keyboard-backspace"
           type="material-community"
           iconStyle={{ color: "#1895b9" }}
-          onPress={() => navigation.toggleDrawer()}
+          onPress={() => navigation.goBack()}
         />
-        <Image
-          source={require("../assets/logo3.png")}
-          style={{ width: 150, height: 70, marginTop: -15 }}
-        />
+
         <BadgeIcon
           type="material-community"
           name="bell"
@@ -131,58 +40,8 @@ const HomeScreen = ({ navigation }) => {
           color={"#1895b9"}
         />
       </View>
-      <View style={styles.greetings}>
-        <Text style={styles.bitText}>
-          And said to them, it is written, my house shall be called the house of
-          prayer
-        </Text>
-        <Text style={{ color: "white" }}>(Matthew 21:13)</Text>
-      </View>
 
       <ScrollView>
-        <View
-          style={
-            (styles.trendingView,
-            {
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-              marginTop: 10,
-              backgroundColor: theme.theme === "light" ? "#ffffff" : "#000000",
-            })
-          }
-        >
-          <Text
-            style={{
-              fontWeight: "bold",
-              color: theme.theme === "light" ? "#000000" : "#ffffff",
-            }}
-          >
-            Trending prayers
-          </Text>
-        </View>
-
-        <View style={styles.trendingView}>
-          {tagsPrayer.map((item) => (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("PrayersByTag", { data: prayerList })
-              }
-              key={item.id}
-            >
-              <View style={styles.tags}>
-                <Text
-                  style={{
-                    fontWeight: "bold",
-                    color: "#1895b9",
-                    letterSpacing: 1,
-                  }}
-                >
-                  {item.title}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
         <View
           style={
             (styles.trendingView,
@@ -291,27 +150,11 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
-      <View
-        style={{
-          ...styles.newRequest,
-
-          backgroundColor: "#1895b9",
-        }}
-      >
-        <Text
-          style={{
-            fontWeight: "bold",
-            color: theme.theme === "light" ? "#000000" : "#ffffff",
-          }}
-        >
-          New request
-        </Text>
-      </View>
     </SafeAreaView>
   );
 };
 
-export default HomeScreen;
+export default PrayersByTag;
 
 const styles = StyleSheet.create({
   container: {
@@ -337,9 +180,8 @@ const styles = StyleSheet.create({
   trendingView: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     paddingHorizontal: 20,
-    gap: 6,
   },
   tags: {
     backgroundColor: "#EFEFEF",
@@ -369,19 +211,134 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     letterSpacing: 1,
   },
-
-  newRequest: {
-    position: "absolute",
-    height: 70,
-    width: 200,
-    backgroundColor: "red",
-    borderRadius: 20,
-    // top: Dimensions.get("window").height / 1,
-    //   left: Dimensions.get("window").width / 4,
-    bottom: 130,
-    right: Dimensions.get("window").width / 4,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 10,
-  },
 });
+
+{
+  /* <FlatList
+              data={prayerList}
+              renderItem={({ item }) => (
+                <View style={styles.requestView}>
+                  <View style={{ flexDirection: "row" }}>
+                    <Avatar
+                      rounded
+                      avatarStyle={styles.avatar}
+                      size={55}
+                      source={{
+                        uri: "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png",
+                      }}
+                    />
+                  </View>
+                  <View style={{ marginLeft: 20, paddingRight: 30 }}>
+                    <Text
+                      style={
+                        (styles.username,
+                        {
+                          color:
+                            theme.theme === "light" ? "#000000" : "#ffffff",
+                        })
+                      }
+                    >
+                      {item.user}
+                    </Text>
+                    <Text style={styles.when}>{item.time}</Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("SinglePrayerRequestScreen", {
+                          data: item,
+                        })
+                      }
+                    >
+                      <Text style={styles.prayerRequest}>{item.request}</Text>
+                    </TouchableOpacity>
+
+                    <View
+                      style={{
+                        width: "100%",
+                        height: 20,
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        marginTop: 20,
+                      }}
+                    >
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <TouchableOpacity>
+                          <Icon
+                            name="heart"
+                            type="material-community"
+                            iconStyle={{ color: "#1895b9" }}
+                            size={24}
+                          />
+                        </TouchableOpacity>
+
+                        <Text
+                          style={{
+                            marginLeft: 5,
+                            color:
+                              theme.theme === "light" ? "#000000" : "#ffffff",
+                          }}
+                        >
+                          {item.likes}
+                        </Text>
+                      </View>
+
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginLeft: 20,
+                        }}
+                      >
+                        <Icon
+                          name="repeat-variant"
+                          type="material-community"
+                          iconStyle={{ color: "#1895b9" }}
+                          size={26}
+                        />
+
+                        <Text
+                          style={{
+                            marginLeft: 5,
+                            marginTop: 5,
+                            color:
+                              theme.theme === "light" ? "#000000" : "#ffffff",
+                          }}
+                        >
+                          {item.replies}
+                        </Text>
+                      </View>
+
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginLeft: 30,
+                        }}
+                      >
+                        <TouchableOpacity>
+                          <Icon
+                            name="comment"
+                            type="material-community"
+                            iconStyle={{ color: "#1895b9" }}
+                            size={24}
+                          />
+                        </TouchableOpacity>
+
+                        <Text
+                          style={{
+                            marginLeft: 10,
+                            color:
+                              theme.theme === "light" ? "#000000" : "#ffffff",
+                          }}
+                        >
+                          Prayer with me
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )}
+              keyExtractor={(item) => item.id}
+            /> */
+}
