@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { View, Text, StyleSheet, Switch } from "react-native";
+import { View, Text, StyleSheet, Switch, TouchableOpacity } from "react-native";
 import { Icon, Avatar } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
 import { lightAction, darkAction } from "../Slice/SwitchTheme";
@@ -9,6 +9,7 @@ const DrawerContent = (props) => {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.switch);
   const [isEnabled, setIsEnabled] = useState(false);
+  // console.log(props, "PROPSSS");
 
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
@@ -52,21 +53,29 @@ const DrawerContent = (props) => {
         </View>
 
         {[
-          { name: "Home", iconName: "home" },
-          { name: "Settings", iconName: "cog-outline" },
+          { name: "Home", iconName: "home", routeName: "HomeScreen" },
+          {
+            name: "Settings",
+            iconName: "cog-outline",
+            routeName: "HomeScreen",
+          },
         ].map((item, id) => (
-          <DrawerItem
-            label={item.name}
-            icon={({ color, size }) => (
-              <Icon
-                type="material-community"
-                name={item.iconName}
-                color={color}
-                size={size}
-              />
-            )}
+          <TouchableOpacity
+            onPress={() => props.navigation.navigate(routeName)}
             key={id}
-          />
+          >
+            <DrawerItem
+              label={item.name}
+              icon={({ color, size }) => (
+                <Icon
+                  type="material-community"
+                  name={item.iconName}
+                  color={color}
+                  size={size}
+                />
+              )}
+            />
+          </TouchableOpacity>
         ))}
 
         <View

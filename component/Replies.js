@@ -2,61 +2,53 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
-  Image,
   TouchableOpacity,
-  TextInput,
-  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import React from "react";
-import Constants from "expo-constants";
-import { useSelector } from "react-redux";
 import { Icon, Avatar } from "react-native-elements";
-import Replies from "../component/Replies";
+import { useSelector } from "react-redux";
 
-const SinglePrayerRequestScreen = ({ navigation, route }) => {
+const Replies = ({ signle }) => {
   const theme = useSelector((state) => state.switch);
-  const single = route.params.data;
+  const commenters = signle?.responses;
+  console.log(signle?.responses, "PROPPSSSS....");
+
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
-      style={{
-        backgroundColor: theme.theme === "light" ? "#ffffff" : "#000000",
-        flex: 1,
-        justifyContent: "space-between",
-      }}
-    >
-      {/* <KeyboardAvoidingView
-        behavior="padding"
-        style={{ justifyContent: "space-between", flex: 1 }}
-      > */}
-      <View style={{ top: Constants.statusBarHeight }}>
-        <View style={styles.headerView}>
-          <Icon
-            name="keyboard-backspace"
-            type="material-community"
-            iconStyle={{ color: "#1895b9" }}
-            onPress={() => navigation.goBack()}
-          />
-        </View>
-        <View>
-          <View style={styles.requestView}>
+    <View>
+      <ScrollView>
+        {commenters.map((comment, id) => (
+          <View style={styles.requestView} key={id}>
             <View style={{ flexDirection: "row" }}>
               <Avatar
                 rounded
-                size={55}
+                avatarStyle={styles.avatar}
+                size={25}
                 source={{
                   uri: "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png",
                 }}
               />
             </View>
             <View style={{ marginLeft: 20, paddingRight: 30 }}>
-              <Text style={styles.username}>{single?.user}</Text>
-              <Text style={styles.when}>{single?.time}</Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("SinglePrayerRequestScreen")}
+              <Text
+                style={
+                  (styles.username,
+                  {
+                    color: theme.theme === "light" ? "#000000" : "#ffffff",
+                  })
+                }
               >
-                <Text style={styles.prayerRequest}>{single?.request}</Text>
+                {comment?.user}
+              </Text>
+              <Text style={styles.when}>{comment?.time}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("SinglePrayerRequestScreen", {
+                    data: item,
+                  })
+                }
+              >
+                <Text style={styles.prayerRequest}>{comment?.request}</Text>
               </TouchableOpacity>
 
               <View
@@ -84,7 +76,7 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
                       color: theme.theme === "light" ? "#000000" : "#ffffff",
                     }}
                   >
-                    {single?.likes}
+                    {comment?.likes}
                   </Text>
                 </View>
 
@@ -109,57 +101,28 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
                       color: theme.theme === "light" ? "#000000" : "#ffffff",
                     }}
                   >
-                    {single?.replies}
+                    {comment?.replies}
                   </Text>
                 </View>
               </View>
-              <Replies signle={single} />
             </View>
           </View>
-        </View>
-      </View>
-
-      <View
-        style={{
-          ...styles.textInput1,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <TextInput
-          placeholder="Leave your prayer"
-          style={{ marginLeft: 10, flex: 1 }}
-          underlineColorAndroid="transparent"
-        />
-        <TouchableOpacity>
-          <Icon
-            name="send"
-            type="material"
-            iconStyle={{ color: "#1895b9" }}
-            size={30}
-          />
-        </TouchableOpacity>
-      </View>
-      {/* </KeyboardAvoidingView> */}
-    </KeyboardAvoidingView>
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 
-export default SinglePrayerRequestScreen;
+export default Replies;
 
 const styles = StyleSheet.create({
-  headerView: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 20,
-  },
   requestView: {
     flexDirection: "row",
     justifyContent: "flex-start",
     paddingHorizontal: 10,
     marginTop: 20,
     paddingBottom: 50,
+    paddingRight: 40,
   },
   username: {
     fontSize: 24,
@@ -175,15 +138,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
     lineHeight: 20,
     letterSpacing: 1,
-  },
-  textInput1: {
-    borderWidth: 0.2,
-    borderColor: "#86939e",
-    marginHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 20,
-    paddingLeft: 10,
-    backgroundColor: "white",
-    padding: 20,
   },
 });

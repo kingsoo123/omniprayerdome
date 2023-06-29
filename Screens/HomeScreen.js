@@ -33,6 +33,15 @@ const prayerList = [
     request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
     likes: "230",
     replies: "20",
+    responses: [
+      {
+        user: "John",
+        time: "2h ago",
+        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
+        likes: "230",
+        replies: "20",
+      },
+    ],
     id: 0,
   },
 
@@ -42,6 +51,15 @@ const prayerList = [
     request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
     likes: "230",
     replies: "20",
+    responses: [
+      {
+        user: "John",
+        time: "2h ago",
+        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
+        likes: "230",
+        replies: "20",
+      },
+    ],
     id: 1,
   },
   {
@@ -50,6 +68,15 @@ const prayerList = [
     request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
     likes: "230",
     replies: "20",
+    responses: [
+      {
+        user: "John",
+        time: "2h ago",
+        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
+        likes: "230",
+        replies: "20",
+      },
+    ],
     id: 2,
   },
   {
@@ -58,6 +85,15 @@ const prayerList = [
     request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
     likes: "230",
     replies: "20",
+    responses: [
+      {
+        user: "John",
+        time: "2h ago",
+        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
+        likes: "230",
+        replies: "20",
+      },
+    ],
     id: 3,
   },
 ];
@@ -171,9 +207,28 @@ const HomeScreen = ({ navigation }) => {
                     />
                   </View>
                   <View style={{ marginLeft: 20, paddingRight: 30 }}>
-                    <Text style={styles.username}>{item.user}</Text>
+                    <Text
+                      style={
+                        (styles.username,
+                        {
+                          color:
+                            theme.theme === "light" ? "#000000" : "#ffffff",
+                        })
+                      }
+                    >
+                      {item.user}
+                    </Text>
                     <Text style={styles.when}>{item.time}</Text>
-                    <Text style={styles.prayerRequest}>{item.request}</Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("SinglePrayerRequestScreen", {
+                          data: item,
+                        })
+                      }
+                    >
+                      <Text style={styles.prayerRequest}>{item.request}</Text>
+                    </TouchableOpacity>
+
                     <View
                       style={{
                         width: "100%",
