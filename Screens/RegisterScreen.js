@@ -72,7 +72,9 @@ const RegisterScreen = ({ navigation }) => {
               iconStyle={{ color: "#1895b9" }}
             />
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate("HomeScreen")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("DrawerNavigator")}
+          >
             <View
               style={{
                 ...styles.button1,
