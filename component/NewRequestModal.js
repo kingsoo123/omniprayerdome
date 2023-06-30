@@ -1,5 +1,12 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
+import React, { useState } from "react";
 import { Icon } from "react-native-elements";
 import { TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
@@ -33,125 +40,127 @@ const NewRequestModal = ({ setShowModal }) => {
   };
 
   return (
-    <View
-      style={{
-        ...styles.container,
-        backgroundColor: theme.theme === "light" ? "#1895b9" : "#000000",
-      }}
-    >
-      <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-        <TouchableOpacity onPress={() => setShowModal(false)}>
-          <View style={styles.smallCircle}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View
+        style={{
+          ...styles.container,
+          backgroundColor: theme.theme === "light" ? "#1895b9" : "#000000",
+        }}
+      >
+        <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+          <TouchableOpacity onPress={() => setShowModal(false)}>
+            <View style={styles.smallCircle}>
+              <Icon
+                name="window-close"
+                type="material-community"
+                iconStyle={{ color: "#000000" }}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: 24,
+            marginTop: 30,
+            color: "#ffffff",
+          }}
+        >
+          + Prayer Request
+        </Text>
+
+        <View
+          style={{
+            width: "100%",
+            padding: 10,
+            backgroundColor: "#ffffff",
+            height: 400,
+            borderRadius: 20,
+            marginTop: 20,
+            justifyContent: "space-between",
+          }}
+        >
+          <TextInput
+            placeholder="Enter your prayer request here..."
+            multiline={true}
+            numberOfLines={10}
+            style={{
+              letterSpacing: 3,
+              padding: 5,
+              paddingVertical: 20,
+            }}
+          />
+
+          <View>
+            <Text style={{ fontWeight: "bold", marginBottom: 20 }}>
+              Select tags
+            </Text>
+            <View style={styles.trendingView}>
+              {tagsPrayer.map((item) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log(item.title, "ITEMSSSS");
+                    //setSelected(item.title)
+                    handleSelect(item.title);
+                  }}
+                  key={item.id}
+                >
+                  <View
+                    style={{
+                      backgroundColor: selected.includes(item.title)
+                        ? "#1895b9"
+                        : "#EFEFEF",
+                      borderRadius: 15,
+                      padding: 2,
+                      marginTop: 10,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        color: selected.includes(item.title)
+                          ? "#ffffff"
+                          : "#1895b9",
+                        letterSpacing: 1,
+                      }}
+                    >
+                      {item.title}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
+
+        <TouchableOpacity>
+          <View
+            style={{
+              ...styles.button1,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Icon
-              name="window-close"
-              type="material-community"
-              iconStyle={{ color: "#000000" }}
+              name="send"
+              type="material"
+              iconStyle={{ color: "#ffffff" }}
+              size={30}
             />
+            <Text
+              style={{
+                fontWeight: "500",
+                color: "#ffffff",
+                fontSize: 20,
+              }}
+            >
+              Create
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
-      <Text
-        style={{
-          fontWeight: "bold",
-          fontSize: 24,
-          marginTop: 30,
-          color: "#ffffff",
-        }}
-      >
-        + Prayer Request
-      </Text>
-
-      <View
-        style={{
-          width: "100%",
-          padding: 10,
-          backgroundColor: "#ffffff",
-          height: 400,
-          borderRadius: 20,
-          marginTop: 20,
-          justifyContent: "space-between",
-        }}
-      >
-        <TextInput
-          placeholder="Enter your prayer request here..."
-          multiline={true}
-          numberOfLines={10}
-          style={{
-            letterSpacing: 3,
-            padding: 5,
-            paddingVertical: 20,
-          }}
-        />
-
-        <View>
-          <Text style={{ fontWeight: "bold", marginBottom: 20 }}>
-            Select tags
-          </Text>
-          <View style={styles.trendingView}>
-            {tagsPrayer.map((item) => (
-              <TouchableOpacity
-                onPress={() => {
-                  console.log(item.title, "ITEMSSSS");
-                  //setSelected(item.title)
-                  handleSelect(item.title);
-                }}
-                key={item.id}
-              >
-                <View
-                  style={{
-                    backgroundColor: selected.includes(item.title)
-                      ? "#1895b9"
-                      : "#EFEFEF",
-                    borderRadius: 15,
-                    padding: 2,
-                    marginTop: 10,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      color: selected.includes(item.title)
-                        ? "#ffffff"
-                        : "#1895b9",
-                      letterSpacing: 1,
-                    }}
-                  >
-                    {item.title}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </View>
-
-      <TouchableOpacity>
-        <View
-          style={{
-            ...styles.button1,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Icon
-            name="send"
-            type="material"
-            iconStyle={{ color: "#ffffff" }}
-            size={30}
-          />
-          <Text
-            style={{
-              fontWeight: "500",
-              color: "#ffffff",
-              fontSize: 20,
-            }}
-          >
-            Create
-          </Text>
-        </View>
-      </TouchableOpacity>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

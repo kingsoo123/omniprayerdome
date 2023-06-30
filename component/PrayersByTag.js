@@ -145,7 +145,13 @@ const PrayersByTag = ({ navigation, route }) => {
                         {prayer.replies}
                       </Text>
                     </View>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("SinglePrayerRequestScreen", {
+                          data: prayer,
+                        })
+                      }
+                    >
                       <View
                         style={{
                           flexDirection: "row",
@@ -167,7 +173,7 @@ const PrayersByTag = ({ navigation, route }) => {
                               theme.theme === "light" ? "#000000" : "#ffffff",
                           }}
                         >
-                          Prayer with me
+                          View prayers
                         </Text>
                       </View>
                     </TouchableOpacity>

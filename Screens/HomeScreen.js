@@ -9,6 +9,7 @@ import {
   ScrollView,
   Dimensions,
   TextInput,
+  ImageBackground,
 } from "react-native";
 import { Icon, withBadge, Avatar } from "react-native-elements";
 import { useSelector } from "react-redux";
@@ -132,13 +133,18 @@ const HomeScreen = ({ navigation }) => {
           color={"#1895b9"}
         />
       </View>
-      <View style={styles.greetings}>
+      <ImageBackground
+        source={{
+          uri: "https://cdn.pixabay.com/photo/2016/11/22/23/15/cliffs-1851113_1280.jpg",
+        }}
+        style={styles.greetings}
+      >
         <Text style={styles.bitText}>
           And said to them, it is written, my house shall be called the house of
           prayer
         </Text>
         <Text style={{ color: "white" }}>(Matthew 21:13)</Text>
-      </View>
+      </ImageBackground>
 
       <ScrollView>
         <View
@@ -307,6 +313,7 @@ const HomeScreen = ({ navigation }) => {
                           flexDirection: "row",
                           alignItems: "center",
                           marginTop: 2,
+                          marginRight: 10,
                         }}
                       >
                         <Icon
@@ -335,18 +342,19 @@ const HomeScreen = ({ navigation }) => {
                         ...styles.textInput1,
                         flexDirection: "row",
                         alignItems: "center",
+                        marginRight: 20,
                       }}
                     >
                       <TextInput
                         placeholder="Leave your prayer"
-                        style={{ marginLeft: 10, flex: 1 }}
+                        style={{ marginLeft: 30, flex: 1 }}
                         underlineColorAndroid="transparent"
                       />
-                      <TouchableOpacity>
+                      <TouchableOpacity onPress={() => setGetPrayerUser("")}>
                         <Icon
                           name="send"
                           type="material"
-                          iconStyle={{ color: "#1895b9" }}
+                          iconStyle={{ color: "#1895b9", marginRight: 10 }}
                           size={24}
                         />
                       </TouchableOpacity>
@@ -462,5 +470,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     backgroundColor: "white",
     marginTop: 10,
+    paddingVertical: 10,
   },
 });
