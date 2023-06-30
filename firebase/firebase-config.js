@@ -2,9 +2,10 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore/lite";
+import { FIREBASE_APIKEY } from "@env";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDBeu_OY4XRHrRHXomcsha5MWb5gUTBEds",
+  apiKey: FIREBASE_APIKEY,
   authDomain: "omni-dome.firebaseapp.com",
   projectId: "omni-dome",
   storageBucket: "omni-dome.appspot.com",
