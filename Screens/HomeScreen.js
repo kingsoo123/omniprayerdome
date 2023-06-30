@@ -8,9 +8,11 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  TextInput,
 } from "react-native";
 import { Icon, withBadge, Avatar } from "react-native-elements";
 import { useSelector } from "react-redux";
+import NewRequestModal from "../component/NewRequestModal";
 
 const tagsPrayer = [
   { title: "Deliverance", id: 0 },
@@ -101,8 +103,9 @@ const prayerList = [
 
 const HomeScreen = ({ navigation }) => {
   const theme = useSelector((state) => state.switch);
-
   const BadgeIcon = withBadge(0)(Icon);
+  const [showModal, setShowModal] = useState(false);
+  const [getPrayerUser, setGetPrayerUser] = useState("");
 
   return (
     <SafeAreaView
@@ -226,7 +229,7 @@ const HomeScreen = ({ navigation }) => {
                       width: "100%",
                       height: 20,
                       flexDirection: "row",
-                      justifyContent: "flex-start",
+                      justifyContent: "space-around",
                       marginTop: 20,
                     }}
                   >
@@ -242,14 +245,21 @@ const HomeScreen = ({ navigation }) => {
                         />
                       </TouchableOpacity>
 
-                      <Text style={{ marginLeft: 5 }}>{prayer.likes}</Text>
+                      <Text
+                        style={{
+                          marginLeft: 5,
+                          color:
+                            theme.theme === "light" ? "#000000" : "#ffffff",
+                        }}
+                      >
+                        {prayer.likes}
+                      </Text>
                     </View>
 
                     <View
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        marginLeft: 20,
                       }}
                     >
                       <Icon
@@ -259,52 +269,115 @@ const HomeScreen = ({ navigation }) => {
                         size={26}
                       />
 
-                      <Text style={{ marginLeft: 5, marginTop: 5 }}>
+                      <Text
+                        style={{
+                          marginLeft: 5,
+                          marginTop: 5,
+                          color:
+                            theme.theme === "light" ? "#000000" : "#ffffff",
+                        }}
+                      >
                         {prayer.replies}
                       </Text>
                     </View>
+                    <TouchableOpacity>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Icon
+                          name="delete"
+                          type="material-community"
+                          iconStyle={{ color: "#1895b9" }}
+                          size={26}
+                        />
+                      </View>
+                    </TouchableOpacity>
 
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginLeft: 30,
+                    <TouchableOpacity
+                      onPress={() => {
+                        console.log(prayer.id, "PRAYERRRR");
+                        setGetPrayerUser(prayer.id);
                       }}
                     >
-                      <TouchableOpacity>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginTop: 2,
+                        }}
+                      >
                         <Icon
                           name="comment"
                           type="material-community"
                           iconStyle={{ color: "#1895b9" }}
+                          size={20}
+                        />
+
+                        <Text
+                          style={{
+                            marginLeft: 5,
+                            color:
+                              theme.theme === "light" ? "#000000" : "#ffffff",
+                          }}
+                        >
+                          Pray
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+
+                  {getPrayerUser === prayer.id && (
+                    <View
+                      style={{
+                        ...styles.textInput1,
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <TextInput
+                        placeholder="Leave your prayer"
+                        style={{ marginLeft: 10, flex: 1 }}
+                        underlineColorAndroid="transparent"
+                      />
+                      <TouchableOpacity>
+                        <Icon
+                          name="send"
+                          type="material"
+                          iconStyle={{ color: "#1895b9" }}
                           size={24}
                         />
                       </TouchableOpacity>
-
-                      <Text style={{ marginLeft: 10 }}>Prayer with me</Text>
                     </View>
-                  </View>
+                  )}
                 </View>
               </View>
             ))}
           </View>
         </View>
       </ScrollView>
-      <View
-        style={{
-          ...styles.newRequest,
-
-          backgroundColor: "#1895b9",
-        }}
-      >
-        <Text
+      <TouchableOpacity onPress={() => setShowModal(true)}>
+        <View
           style={{
-            fontWeight: "bold",
-            color: theme.theme === "light" ? "#000000" : "#ffffff",
+            ...styles.newRequest,
+
+            backgroundColor: "#1895b9",
           }}
         >
-          New request
-        </Text>
-      </View>
+          <Text
+            style={{
+              fontWeight: "bold",
+              color: "#ffffff",
+            }}
+          >
+            + New prayer request
+          </Text>
+        </View>
+      </TouchableOpacity>
+
+      {showModal && <NewRequestModal setShowModal={setShowModal} />}
     </SafeAreaView>
   );
 };
@@ -376,10 +449,18 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // top: Dimensions.get("window").height / 1,
     //   left: Dimensions.get("window").width / 4,
-    bottom: 130,
+    bottom: 60,
     right: Dimensions.get("window").width / 4,
     justifyContent: "center",
     alignItems: "center",
     elevation: 10,
+  },
+  textInput1: {
+    borderWidth: 0.2,
+    borderColor: "#86939e",
+    borderRadius: 5,
+    paddingLeft: 10,
+    backgroundColor: "white",
+    marginTop: 10,
   },
 });

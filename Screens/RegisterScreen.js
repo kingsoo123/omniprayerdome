@@ -4,6 +4,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { Icon } from "react-native-elements";
@@ -17,16 +18,18 @@ const RegisterScreen = ({ navigation }) => {
     username: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = () => {
+    setLoading(true);
     createUserWithEmailAndPassword(auth, userData.email, userData.password)
       .then((userCred) => {
         const user = userCred.user;
-        console.log(user, "USER");
+        setLoading(false);
       })
       .catch((error) => {
-        console.log(error.message, "ERROR");
-        setError(`Email already used`);
+        setError(`There seems to be a problem with what you typed`);
+        setLoading(false);
       });
   };
   return (
@@ -120,7 +123,11 @@ const RegisterScreen = ({ navigation }) => {
                   fontSize: 20,
                 }}
               >
-                Register
+                {loading ? (
+                  <ActivityIndicator size="small" color="#ffffff" />
+                ) : (
+                  "Register"
+                )}
               </Text>
             </View>
           </TouchableOpacity>

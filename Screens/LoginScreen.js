@@ -4,6 +4,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -19,15 +20,19 @@ const LoginScreen = ({ navigation }) => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = () => {
+    setLoading(true);
     signInWithEmailAndPassword(auth, userData.email, userData.password)
       .then((userCred) => {
         const user = userCred.user;
         dispatch(signIn());
+        setLoading(false);
       })
       .catch((error) => {
         setError(`Check the info you typed`);
+        setLoading(false);
       });
   };
   return (
@@ -50,10 +55,6 @@ const LoginScreen = ({ navigation }) => {
               name="email"
               type="material"
               iconStyle={{ color: "#1895b9" }}
-              onChangeText={(text) => {
-                //setError("");
-                setUserData({ ...userData, email: text });
-              }}
             />
             <TextInput
               placeholder="Email"
@@ -116,7 +117,11 @@ const LoginScreen = ({ navigation }) => {
                   fontSize: 20,
                 }}
               >
-                Login
+                {loading ? (
+                  <ActivityIndicator size="small" color="#ffffff" />
+                ) : (
+                  "Login"
+                )}
               </Text>
             </View>
           </TouchableOpacity>

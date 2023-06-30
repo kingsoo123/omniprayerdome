@@ -104,6 +104,22 @@ const Replies = ({ signle }) => {
                     {comment?.replies}
                   </Text>
                 </View>
+                <TouchableOpacity>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginLeft: 20,
+                    }}
+                  >
+                    <Icon
+                      name="delete"
+                      type="material-community"
+                      iconStyle={{ color: "#1895b9" }}
+                      size={26}
+                    />
+                  </View>
+                </TouchableOpacity>
               </View>
             </View>
           </View>

@@ -145,33 +145,32 @@ const PrayersByTag = ({ navigation, route }) => {
                         {prayer.replies}
                       </Text>
                     </View>
-
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginLeft: 30,
-                      }}
-                    >
-                      <TouchableOpacity>
+                    <TouchableOpacity>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginLeft: 30,
+                        }}
+                      >
                         <Icon
                           name="comment"
                           type="material-community"
                           iconStyle={{ color: "#1895b9" }}
                           size={24}
                         />
-                      </TouchableOpacity>
 
-                      <Text
-                        style={{
-                          marginLeft: 10,
-                          color:
-                            theme.theme === "light" ? "#000000" : "#ffffff",
-                        }}
-                      >
-                        Prayer with me
-                      </Text>
-                    </View>
+                        <Text
+                          style={{
+                            marginLeft: 10,
+                            color:
+                              theme.theme === "light" ? "#000000" : "#ffffff",
+                          }}
+                        >
+                          Prayer with me
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
