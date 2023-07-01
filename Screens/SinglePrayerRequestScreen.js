@@ -5,16 +5,79 @@ import {
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView,
+  Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Constants from "expo-constants";
 import { useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Icon, Avatar } from "react-native-elements";
 import Replies from "../component/Replies";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
+import { db } from "../firebase/firebase-config";
+import { doc, updateDoc, getDoc } from "firebase/firestore/lite";
 
 const SinglePrayerRequestScreen = ({ navigation, route }) => {
   const theme = useSelector((state) => state.switch);
-  const single = route.params.data;
+  const prayer = route.params.data;
+  const [single, setPrayer] = useState(prayer);
+  const [prayerComment, setPrayerComment] = useState("");
+  const [name, setName] = useState("");
+  const [isClicked, setIsClicked] = useState(false);
+  const ref = useRef();
+
+  //console.log(single, "STATEEEEEEEE");
+
+  const contributePrayers = async (id, prayer, response) => {
+    response.push({
+      request: prayer,
+      likes: 0,
+      user: name,
+      response_id: uuidv4(),
+    });
+    const newComment = {
+      responses: response,
+    };
+
+    const prayerDoc = doc(db, "prayer_request", id);
+    await updateDoc(prayerDoc, newComment);
+    setIsClicked(false);
+  };
+
+  useEffect(() => {
+    const getPrayer = async () => {
+      try {
+        //console.log(prayer.id, "IDDDDDDDDDD");
+        const docRef = doc(db, "prayer_request", prayer.id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          //console.log(docSnap.data(), "YESSS DOCCSSSS");
+          setPrayer(docSnap.data());
+        } else {
+          console.log("Document does not exist");
+        }
+      } catch (error) {
+        console.log(error);
+        setIsClicked(false);
+      }
+    };
+    getPrayer();
+  }, [isClicked]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const value = await AsyncStorage.getItem("displayName");
+        setName(value);
+      } catch (e) {
+        // error reading value
+        console.log(e);
+      }
+    };
+    getData();
+  }, [isClicked]);
+
   return (
     <KeyboardAvoidingView
       behavior="padding"
@@ -24,10 +87,6 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
         justifyContent: "space-between",
       }}
     >
-      {/* <KeyboardAvoidingView
-        behavior="padding"
-        style={{ justifyContent: "space-between", flex: 1 }}
-      > */}
       <View style={{ top: Constants.statusBarHeight }}>
         <View style={styles.headerView}>
           <Icon
@@ -72,7 +131,12 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
                 }}
               >
                 <TouchableOpacity>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
                     <Icon
                       name="heart"
                       type="material-community"
@@ -126,14 +190,26 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
           ...styles.textInput1,
           flexDirection: "row",
           alignItems: "center",
+          position: "absolute",
+          bottom: Dimensions.get("window").height / 30,
+          right: 0,
         }}
       >
         <TextInput
           placeholder="Leave your prayer"
           style={{ marginLeft: 10, flex: 1 }}
           underlineColorAndroid="transparent"
+          onChangeText={(text) => setPrayerComment(text)}
+          ref={ref}
         />
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            //console.log(prayer.id, single.responses, "FROMMMMMMMMMM");
+            contributePrayers(prayer.id, prayerComment, single.responses);
+            ref.current.clear();
+            setIsClicked(true);
+          }}
+        >
           <Icon
             name="send"
             type="material"

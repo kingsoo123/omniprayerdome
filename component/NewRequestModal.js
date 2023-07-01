@@ -53,7 +53,6 @@ const NewRequestModal = ({ setShowModal }) => {
   }, []);
   const [prayerRequest, setPrayerRequest] = useState({
     likes: 0,
-    replies: 0,
     request: "God is the greates and the King of kings.",
     responses: [],
   });
