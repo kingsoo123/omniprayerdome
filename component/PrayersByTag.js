@@ -23,7 +23,7 @@ const PrayersByTag = ({ navigation }) => {
   const [isClicked, setIsClicked] = useState(false);
   const collectionRef = collection(db, "prayer_request");
 
-  console.log(likeId?.likesIdArray, "PRAYYYY");
+  //console.log(likeId?.likesIdArray, "PRAYYYY");
 
   useEffect(() => {
     const getPrayerRequest = async () => {
@@ -267,8 +267,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     paddingHorizontal: 10,
-    marginTop: 20,
-    paddingBottom: 50,
+    marginTop: 15,
+    paddingBottom: 20,
   },
   username: {
     fontSize: 16,

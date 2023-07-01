@@ -27,7 +27,7 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
   const [isClicked, setIsClicked] = useState(false);
   const ref = useRef();
 
-  //console.log(single, "STATEEEEEEEE");
+  //console.log(prayer.id, "STATEEEEEEEE");
 
   const contributePrayers = async (id, prayer, response) => {
     response.push({
@@ -179,7 +179,12 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
                   </Text>
                 </View>
               </View>
-              <Replies signle={single} />
+              <Replies
+                signle={prayer.responses}
+                id={prayer.id}
+                // setPrayer={setPrayer}
+                // setIsClicked={setIsClicked}
+              />
             </View>
           </View>
         </View>

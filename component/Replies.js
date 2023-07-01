@@ -5,14 +5,74 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Icon, Avatar } from "react-native-elements";
-import { useSelector } from "react-redux";
+import { addNewLikesId, isLikedAction } from "../Slice/LikesSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { db } from "../firebase/firebase-config";
+import {
+  updateDoc,
+  doc,
+  collection,
+  getDoc,
+  arrayUnion,
+} from "firebase/firestore/lite";
 
-const Replies = ({ signle }) => {
+const Replies = ({ signle, id, setPrayer, setIsClicked }) => {
+  const dispatch = useDispatch();
   const theme = useSelector((state) => state.switch);
-  const commenters = signle?.responses;
-  //console.log(signle?.responses, "PROPPSSSS....");
+  const likeId = useSelector((state) => state.likes);
+  const commenters = signle;
+  //signle?.responses
+
+  // const collectionRef = collection(db, "prayer_request");
+
+  const getAllUpdatedPrayer = (id) => {
+    // console.log(signle, "PROPPSSSS....");
+
+    const mapSingle = signle.map(({ likes, response_id, ...prayer }) => ({
+      ...prayer,
+      likes: id === response_id ? likes + 1 : likes,
+      response_id: response_id,
+    }));
+
+    return mapSingle;
+  };
+
+  const getPrayer = async () => {
+    try {
+      //console.log(prayer.id, "IDDDDDDDDDD");
+      const docRef = doc(db, "prayer_request", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        //console.log(docSnap.data(), "YESSS DOCCSSSS");
+        setPrayer(docSnap.data());
+      } else {
+        console.log("Document does not exist");
+      }
+    } catch (error) {
+      console.log(error);
+      setIsClicked(false);
+    }
+  };
+
+  const addLikes = async (resp_id) => {
+    dispatch(addNewLikesId(resp_id));
+    dispatch(isLikedAction());
+    console.log(likeId?.likesIdArray, "MMMMMMM....");
+    if (!likeId?.likesIdArray?.includes(resp_id)) {
+      console.log(resp_id, "PROPPSSSS....");
+
+      newLike = {
+        responses: getAllUpdatedPrayer(resp_id),
+      };
+      const prayerDoc = doc(db, "prayer_request", id);
+      await updateDoc(prayerDoc, newLike);
+      setIsClicked(false);
+    } else {
+      dispatch(addNewLikesId(id));
+    }
+  };
 
   return (
     <View>
@@ -60,26 +120,43 @@ const Replies = ({ signle }) => {
                   marginTop: 10,
                 }}
               >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log(
+                      comment.likes,
+                      comment.request,
+                      comment.user,
+                      comment.response_id,
+                      "FROM COMP"
+                    );
+                    //getAllUpdatedPrayer(comment.response_id);
+                    //getPrayer();
+                    addLikes(
+                      comment.response_id,
+                      comment.likes,
+                      comment.request,
+                      comment.user
+                    );
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Icon
                       name="heart"
                       type="material-community"
                       iconStyle={{ color: "#1895b9" }}
                       size={24}
                     />
-                  </TouchableOpacity>
 
-                  <Text
-                    style={{
-                      marginLeft: 5,
-                      color: theme.theme === "light" ? "#000000" : "#ffffff",
-                    }}
-                  >
-                    {comment?.likes}
-                  </Text>
-                </View>
-
+                    <Text
+                      style={{
+                        marginLeft: 5,
+                        color: theme.theme === "light" ? "#000000" : "#ffffff",
+                      }}
+                    >
+                      {comment?.likes}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
                 <View
                   style={{
                     flexDirection: "row",
@@ -155,3 +232,10 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 });
+
+// : {
+//   likes: like + 1,
+//   request: request,
+//   response_id: resp_id,
+//   user: user,
+// },
