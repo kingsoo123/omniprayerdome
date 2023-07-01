@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,21 +8,55 @@ import {
   ScrollView,
 } from "react-native";
 import { Icon, withBadge, Avatar } from "react-native-elements";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addNewLikesId, isLikedAction } from "../Slice/LikesSlice";
+import { db } from "../firebase/firebase-config";
+import { updateDoc, doc, collection, getDocs } from "firebase/firestore/lite";
 
-const PrayersByTag = ({ navigation, route }) => {
+const PrayersByTag = ({ navigation }) => {
+  const dispatch = useDispatch();
   const theme = useSelector((state) => state.switch);
-  const prayerList = route.params.data;
+  const likeId = useSelector((state) => state.likes);
+  const [prayerData, setPrayerData] = useState([]);
+
   const BadgeIcon = withBadge(0)(Icon);
+  const [isClicked, setIsClicked] = useState(false);
+  const collectionRef = collection(db, "prayer_request");
+
+  console.log(likeId?.likesIdArray, "PRAYYYY");
+
+  useEffect(() => {
+    const getPrayerRequest = async () => {
+      const data = await getDocs(collectionRef);
+      const mapData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      setPrayerData(mapData);
+    };
+    getPrayerRequest();
+  }, [isClicked, likeId?.isLiked]);
+
+  const addLikes = async (id, like) => {
+    let newLike = { likes: like };
+    console.log(newLike.likes, like, id, "NEW LIKE");
+    dispatch(addNewLikesId(id));
+    dispatch(isLikedAction());
+    if (!likeId?.likesIdArray?.includes(id)) {
+      newLike = { likes: like + 1 };
+      const prayerDoc = doc(db, "prayer_request", id);
+      await updateDoc(prayerDoc, newLike);
+      setIsClicked(true);
+      dispatch(isLikedAction());
+    } else {
+      dispatch(addNewLikesId(id));
+      setIsClicked(false);
+    }
+  };
 
   return (
     <SafeAreaView
-      style={
-        (styles.container,
-        {
-          backgroundColor: theme.theme === "light" ? "#ffffff" : "#000000",
-        })
-      }
+      style={{
+        ...styles.container,
+        backgroundColor: theme.theme === "light" ? "#ffffff" : "#000000",
+      }}
     >
       <View style={styles.headerView}>
         <Icon
@@ -57,7 +91,7 @@ const PrayersByTag = ({ navigation, route }) => {
           </Text>
 
           <View style={{ paddingBottom: 200 }}>
-            {prayerList.map((prayer) => (
+            {prayerData.map((prayer) => (
               <View style={styles.requestView} key={prayer.id}>
                 <View style={{ flexDirection: "row" }}>
                   <Avatar
@@ -97,28 +131,34 @@ const PrayersByTag = ({ navigation, route }) => {
                       marginTop: 20,
                     }}
                   >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
+                    <TouchableOpacity
+                      onPress={() => {
+                        console.log(prayer.id, prayer.likes, "FROM TAGAAA");
+                        setIsClicked(true);
+                        addLikes(prayer.id, prayer.likes);
+                      }}
                     >
-                      <TouchableOpacity>
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
                         <Icon
                           name="heart"
                           type="material-community"
                           iconStyle={{ color: "#1895b9" }}
                           size={24}
                         />
-                      </TouchableOpacity>
 
-                      <Text
-                        style={{
-                          marginLeft: 5,
-                          color:
-                            theme.theme === "light" ? "#000000" : "#ffffff",
-                        }}
-                      >
-                        {prayer.likes}
-                      </Text>
-                    </View>
+                        <Text
+                          style={{
+                            marginLeft: 5,
+                            color:
+                              theme.theme === "light" ? "#000000" : "#ffffff",
+                          }}
+                        >
+                          {prayer.likes}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
 
                     <View
                       style={{
@@ -142,7 +182,7 @@ const PrayersByTag = ({ navigation, route }) => {
                             theme.theme === "light" ? "#000000" : "#ffffff",
                         }}
                       >
-                        {prayer.replies}
+                        {prayer?.responses?.length}
                       </Text>
                     </View>
                     <TouchableOpacity
@@ -160,7 +200,7 @@ const PrayersByTag = ({ navigation, route }) => {
                         }}
                       >
                         <Icon
-                          name="comment"
+                          name="gesture-spread"
                           type="material-community"
                           iconStyle={{ color: "#1895b9" }}
                           size={24}
@@ -231,9 +271,10 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
   username: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "500",
     letterSpacing: 1,
+    marginTop: 10,
   },
   when: {
     color: "gray",

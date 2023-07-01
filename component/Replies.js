@@ -57,7 +57,7 @@ const Replies = ({ signle }) => {
                   height: 20,
                   flexDirection: "row",
                   justifyContent: "flex-start",
-                  marginTop: 20,
+                  marginTop: 10,
                 }}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -88,20 +88,19 @@ const Replies = ({ signle }) => {
                   }}
                 >
                   <Icon
-                    name="repeat-variant"
+                    name="content-copy"
                     type="material-community"
                     iconStyle={{ color: "#1895b9" }}
-                    size={26}
+                    size={20}
                   />
 
                   <Text
                     style={{
                       marginLeft: 5,
-                      marginTop: 5,
                       color: theme.theme === "light" ? "#000000" : "#ffffff",
                     }}
                   >
-                    {comment?.replies}
+                    copy
                   </Text>
                 </View>
                 <TouchableOpacity>
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingHorizontal: 10,
     marginTop: 20,
-    paddingBottom: 50,
+    paddingBottom: 20,
     paddingRight: 40,
   },
   username: {

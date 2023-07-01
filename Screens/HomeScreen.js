@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,10 +10,18 @@ import {
   Dimensions,
   TextInput,
   ImageBackground,
+  RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { Icon, withBadge, Avatar } from "react-native-elements";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import NewRequestModal from "../component/NewRequestModal";
+import { db } from "../firebase/firebase-config";
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore/lite";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { addNewLikesId, isLikedAction } from "../Slice/LikesSlice";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 
 const tagsPrayer = [
   { title: "Deliverance", id: 0 },
@@ -30,83 +38,84 @@ const tagsPrayer = [
   { title: "Testimonies", id: 11 },
 ];
 
-const prayerList = [
-  {
-    user: "John",
-    time: "2h ago",
-    request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-    likes: "230",
-    replies: "20",
-    responses: [
-      {
-        user: "John",
-        time: "2h ago",
-        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-        likes: "230",
-        replies: "20",
-      },
-    ],
-    id: 0,
-  },
-
-  {
-    user: "Thomas",
-    time: "2h ago",
-    request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-    likes: "230",
-    replies: "20",
-    responses: [
-      {
-        user: "John",
-        time: "2h ago",
-        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-        likes: "230",
-        replies: "20",
-      },
-    ],
-    id: 1,
-  },
-  {
-    user: "Steven",
-    time: "2h ago",
-    request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-    likes: "230",
-    replies: "20",
-    responses: [
-      {
-        user: "John",
-        time: "2h ago",
-        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-        likes: "230",
-        replies: "20",
-      },
-    ],
-    id: 2,
-  },
-  {
-    user: "Chris",
-    time: "2h ago",
-    request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-    likes: "230",
-    replies: "20",
-    responses: [
-      {
-        user: "John",
-        time: "2h ago",
-        request: `I'm expecting the fruit of womb, I want the brethren please pray along with me and conect their faith mine as I wait on God.`,
-        likes: "230",
-        replies: "20",
-      },
-    ],
-    id: 3,
-  },
-];
-
 const HomeScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const theme = useSelector((state) => state.switch);
+  const likeId = useSelector((state) => state.likes);
   const BadgeIcon = withBadge(0)(Icon);
   const [showModal, setShowModal] = useState(false);
+  const [prayerData, setPrayerData] = useState([]);
   const [getPrayerUser, setGetPrayerUser] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+  const collectionRef = collection(db, "prayer_request");
+  const [isClicked, setIsClicked] = useState(false);
+  const [name, setName] = useState("");
+  const [prayerComment, setPrayerComment] = useState("");
+
+  console.log(uuidv4(), "PRAYYYY");
+
+  useEffect(() => {
+    const getPrayerRequest = async () => {
+      const data = await getDocs(collectionRef);
+      const mapData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      setPrayerData(mapData);
+    };
+    getPrayerRequest();
+  }, [showModal, isClicked, likeId?.isLiked]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+  useEffect(() => {}, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const value = await AsyncStorage.getItem("displayName");
+        setName(value);
+      } catch (e) {
+        // error reading value
+        console.log(e);
+      }
+    };
+    getData();
+  }, []);
+
+  const addLikes = async (id, like) => {
+    let newLike = { likes: like };
+    console.log(newLike.likes, like, id, "NEW LIKE");
+    dispatch(addNewLikesId(id));
+    dispatch(isLikedAction());
+
+    if (!likeId?.likesIdArray?.includes(id)) {
+      newLike = { likes: like + 1 };
+      const prayerDoc = doc(db, "prayer_request", id);
+      await updateDoc(prayerDoc, newLike);
+      setIsClicked(false);
+    } else {
+      dispatch(addNewLikesId(id));
+    }
+  };
+
+  const contributePrayers = async (id, prayer, response) => {
+    response.push({
+      request: prayer,
+      likes: 0,
+      user: name,
+      response_id: uuidv4(),
+    });
+    const newComment = {
+      responses: response,
+    };
+
+    const prayerDoc = doc(db, "prayer_request", id);
+    await updateDoc(prayerDoc, newComment);
+    setIsClicked(false);
+  };
 
   return (
     <SafeAreaView
@@ -146,7 +155,11 @@ const HomeScreen = ({ navigation }) => {
         <Text style={{ color: "white" }}>(Matthew 21:13)</Text>
       </ImageBackground>
 
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View
           style={
             (styles.trendingView,
@@ -172,7 +185,7 @@ const HomeScreen = ({ navigation }) => {
           {tagsPrayer.map((item) => (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("PrayersByTag", { data: prayerList })
+                navigation.navigate("PrayersByTag", { data: prayerData })
               }
               key={item.id}
             >
@@ -205,88 +218,85 @@ const HomeScreen = ({ navigation }) => {
             All Requests
           </Text>
 
-          <View style={{ paddingBottom: 200 }}>
-            {prayerList.map((prayer) => (
-              <View style={styles.requestView} key={prayer.id}>
-                <View style={{ flexDirection: "row" }}>
-                  <Avatar
-                    rounded
-                    avatarStyle={styles.avatar}
-                    size={45}
-                    source={{
-                      uri: "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png",
-                    }}
-                  />
-                </View>
-                <View style={{ marginLeft: 20, paddingRight: 30 }}>
-                  <Text style={styles.username}>{prayer.user}</Text>
-                  <Text style={styles.when}>{prayer.time}</Text>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate("SinglePrayerRequestScreen", {
-                        data: prayer,
-                      })
-                    }
-                  >
-                    <Text style={styles.prayerRequest}>{prayer.request}</Text>
-                  </TouchableOpacity>
-                  <View
-                    style={{
-                      width: "100%",
-                      height: 20,
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                      marginTop: 20,
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <TouchableOpacity>
-                        <Icon
-                          name="heart"
-                          type="material-community"
-                          iconStyle={{ color: "#1895b9" }}
-                          size={24}
-                        />
-                      </TouchableOpacity>
-
-                      <Text
-                        style={{
-                          marginLeft: 5,
-                          color:
-                            theme.theme === "light" ? "#000000" : "#ffffff",
-                        }}
-                      >
-                        {prayer.likes}
-                      </Text>
-                    </View>
-
-                    <View
+          <View style={{ paddingBottom: 100 }}>
+            {!prayerData ? (
+              <ActivityIndicator size="small" color="#1895b9" />
+            ) : (
+              prayerData?.map((prayer) => (
+                <View style={styles.requestView} key={prayer.id}>
+                  <View style={{ flexDirection: "row" }}>
+                    <Avatar
+                      rounded
+                      avatarStyle={styles.avatar}
+                      size={45}
+                      source={{
+                        uri: "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png",
+                      }}
+                    />
+                  </View>
+                  <View style={{ marginLeft: 20, paddingRight: 30 }}>
+                    <Text
                       style={{
-                        flexDirection: "row",
-                        alignItems: "center",
+                        ...styles.username,
+                        color: theme.theme === "light" ? "#000000" : "#ffffff",
                       }}
                     >
-                      <Icon
-                        name="repeat-variant"
-                        type="material-community"
-                        iconStyle={{ color: "#1895b9" }}
-                        size={26}
-                      />
-
-                      <Text
-                        style={{
-                          marginLeft: 5,
-                          marginTop: 5,
-                          color:
-                            theme.theme === "light" ? "#000000" : "#ffffff",
+                      {prayer.user}
+                    </Text>
+                    <Text
+                      style={{
+                        ...styles.when,
+                        color: theme.theme === "light" ? "#000000" : "#ffffff",
+                      }}
+                    >
+                      {prayer.time}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("SinglePrayerRequestScreen", {
+                          data: prayer,
+                        })
+                      }
+                    >
+                      <Text style={styles.prayerRequest}>{prayer.request}</Text>
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        width: "100%",
+                        height: 20,
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        marginTop: 20,
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => {
+                          setIsClicked(true);
+                          addLikes(prayer.id, prayer.likes);
                         }}
                       >
-                        {prayer.replies}
-                      </Text>
-                    </View>
-                    <TouchableOpacity>
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
+                          <Icon
+                            name="heart"
+                            type="material-community"
+                            iconStyle={{ color: "#1895b9" }}
+                            size={24}
+                          />
+
+                          <Text
+                            style={{
+                              marginLeft: 5,
+                              color:
+                                theme.theme === "light" ? "#000000" : "#ffffff",
+                            }}
+                          >
+                            {prayer.likes}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+
                       <View
                         style={{
                           flexDirection: "row",
@@ -294,75 +304,117 @@ const HomeScreen = ({ navigation }) => {
                         }}
                       >
                         <Icon
-                          name="delete"
+                          name="repeat-variant"
                           type="material-community"
                           iconStyle={{ color: "#1895b9" }}
                           size={26}
-                        />
-                      </View>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      onPress={() => {
-                        console.log(prayer.id, "PRAYERRRR");
-                        setGetPrayerUser(prayer.id);
-                      }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          marginTop: 2,
-                          marginRight: 10,
-                        }}
-                      >
-                        <Icon
-                          name="comment"
-                          type="material-community"
-                          iconStyle={{ color: "#1895b9" }}
-                          size={20}
                         />
 
                         <Text
                           style={{
                             marginLeft: 5,
+                            marginTop: 5,
                             color:
                               theme.theme === "light" ? "#000000" : "#ffffff",
                           }}
                         >
-                          Pray
+                          {prayer.responses?.length}
                         </Text>
                       </View>
-                    </TouchableOpacity>
-                  </View>
+                      <TouchableOpacity>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Icon
+                            name="delete"
+                            type="material-community"
+                            iconStyle={{ color: "#1895b9" }}
+                            size={26}
+                          />
+                        </View>
+                      </TouchableOpacity>
 
-                  {getPrayerUser === prayer.id && (
-                    <View
-                      style={{
-                        ...styles.textInput1,
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginRight: 20,
-                      }}
-                    >
-                      <TextInput
-                        placeholder="Leave your prayer"
-                        style={{ marginLeft: 30, flex: 1 }}
-                        underlineColorAndroid="transparent"
-                      />
-                      <TouchableOpacity onPress={() => setGetPrayerUser("")}>
-                        <Icon
-                          name="send"
-                          type="material"
-                          iconStyle={{ color: "#1895b9", marginRight: 10 }}
-                          size={24}
-                        />
+                      <TouchableOpacity
+                        onPress={() => {
+                          console.log(prayer.id, "PRAYERRRR");
+                          setGetPrayerUser(prayer.id);
+                        }}
+                      >
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginTop: 2,
+                            marginRight: 10,
+                          }}
+                        >
+                          <Icon
+                            name="comment"
+                            type="material-community"
+                            iconStyle={{ color: "#1895b9" }}
+                            size={20}
+                          />
+
+                          <Text
+                            style={{
+                              marginLeft: 5,
+                              color:
+                                theme.theme === "light" ? "#000000" : "#ffffff",
+                            }}
+                          >
+                            Pray
+                          </Text>
+                        </View>
                       </TouchableOpacity>
                     </View>
-                  )}
+
+                    {getPrayerUser === prayer.id && (
+                      <View
+                        style={{
+                          ...styles.textInput1,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginRight: 20,
+                        }}
+                      >
+                        <TextInput
+                          placeholder="Leave your prayer"
+                          style={{ marginLeft: 30, flex: 1 }}
+                          underlineColorAndroid="transparent"
+                          onChangeText={(text) => setPrayerComment(text)}
+                        />
+                        <TouchableOpacity
+                          onPress={() => {
+                            console.log(
+                              prayer.id,
+                              prayerComment,
+                              prayer.responses.length
+                            );
+                            setIsClicked(true);
+                            contributePrayers(
+                              prayer.id,
+                              prayerComment,
+                              prayer.responses
+                            );
+                            setGetPrayerUser("");
+                          }}
+                        >
+                          <Icon
+                            name="send"
+                            type="material"
+                            iconStyle={{ color: "#1895b9", marginRight: 10 }}
+                            size={24}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                  </View>
                 </View>
-              </View>
-            ))}
+              ))
+            )}
           </View>
         </View>
       </ScrollView>
@@ -429,14 +481,13 @@ const styles = StyleSheet.create({
   requestView: {
     flexDirection: "row",
     justifyContent: "flex-start",
-    paddingHorizontal: 10,
     marginTop: 20,
-    paddingBottom: 50,
   },
   username: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "500",
     letterSpacing: 1,
+    marginTop: 10,
   },
   when: {
     color: "gray",

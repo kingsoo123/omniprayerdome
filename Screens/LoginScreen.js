@@ -5,6 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -27,7 +29,7 @@ const LoginScreen = ({ navigation }) => {
     signInWithEmailAndPassword(auth, userData.email, userData.password)
       .then((userCred) => {
         const user = userCred.user;
-        console.log(user.email, "USERSSS");
+        //console.log(user.email, "USERSSS");
         dispatch(signIn());
         setLoading(false);
       })
@@ -37,116 +39,118 @@ const LoginScreen = ({ navigation }) => {
       });
   };
   return (
-    <View style={styles.container}>
-      <View style={styles.topView}>
-        <Text style={styles.bitText}>Sign in to your</Text>
-        <Text style={styles.bitText}>Account</Text>
-        <Text style={styles.smallText}>If you have an account</Text>
-      </View>
-      <View style={styles.bottomView}>
-        <View style={{ marginTop: 30 }}>
-          <View
-            style={{
-              ...styles.textInput1,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Icon
-              name="email"
-              type="material"
-              iconStyle={{ color: "#1895b9" }}
-            />
-            <TextInput
-              placeholder="Email"
-              style={{ marginLeft: 10, flex: 1 }}
-              underlineColorAndroid="transparent"
-              onChangeText={(text) => {
-                setError("");
-                setUserData({ ...userData, email: text });
-              }}
-            />
-          </View>
-          <View
-            style={{
-              ...styles.textInput1,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <TextInput
-              placeholder="Password"
-              style={{ marginLeft: 10, flex: 1 }}
-              underlineColorAndroid="transparent"
-              onChangeText={(text) => {
-                setError("");
-                setUserData({ ...userData, password: text });
-              }}
-            />
-            <Icon
-              name="visibility-off"
-              type="material"
-              iconStyle={{ color: "#1895b9" }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              height: 30,
-              justifyContent: "flex-end",
-              alignItems: "center",
-              paddingHorizontal: 20,
-            }}
-          >
-            <Text style={{ fontWeight: "500", color: "#1895b9" }}>
-              Forgot password?
-            </Text>
-          </View>
-          <TouchableOpacity onPress={() => handleSubmit()}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <View style={styles.topView}>
+          <Text style={styles.bitText}>Sign in to your</Text>
+          <Text style={styles.bitText}>Account</Text>
+          <Text style={styles.smallText}>If you have an account</Text>
+        </View>
+        <View style={styles.bottomView}>
+          <View style={{ marginTop: 30 }}>
             <View
               style={{
-                ...styles.button1,
+                ...styles.textInput1,
                 flexDirection: "row",
-                justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <Text
-                style={{
-                  fontWeight: "500",
-                  color: "#ffffff",
-                  fontSize: 20,
+              <Icon
+                name="email"
+                type="material"
+                iconStyle={{ color: "#1895b9" }}
+              />
+              <TextInput
+                placeholder="Email"
+                style={{ marginLeft: 10, flex: 1 }}
+                underlineColorAndroid="transparent"
+                onChangeText={(text) => {
+                  setError("");
+                  setUserData({ ...userData, email: text });
                 }}
-              >
-                {loading ? (
-                  <ActivityIndicator size="small" color="#ffffff" />
-                ) : (
-                  "Login"
-                )}
+              />
+            </View>
+            <View
+              style={{
+                ...styles.textInput1,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <TextInput
+                placeholder="Password"
+                style={{ marginLeft: 10, flex: 1 }}
+                underlineColorAndroid="transparent"
+                onChangeText={(text) => {
+                  setError("");
+                  setUserData({ ...userData, password: text });
+                }}
+              />
+              <Icon
+                name="visibility-off"
+                type="material"
+                iconStyle={{ color: "#1895b9" }}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                height: 30,
+                justifyContent: "flex-end",
+                alignItems: "center",
+                paddingHorizontal: 20,
+              }}
+            >
+              <Text style={{ fontWeight: "500", color: "#1895b9" }}>
+                Forgot password?
               </Text>
             </View>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 40,
-          }}
-        >
-          <Text style={{ fontWeight: "500" }}>Don't have an account?</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("RegisterScreen")}
+            <TouchableOpacity onPress={() => handleSubmit()}>
+              <View
+                style={{
+                  ...styles.button1,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontWeight: "500",
+                    color: "#ffffff",
+                    fontSize: 20,
+                  }}
+                >
+                  {loading ? (
+                    <ActivityIndicator size="small" color="#ffffff" />
+                  ) : (
+                    "Login"
+                  )}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 40,
+            }}
           >
-            <Text style={{ color: "#1895b9" }}> Register</Text>
-          </TouchableOpacity>
+            <Text style={{ fontWeight: "500" }}>Don't have an account?</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("RegisterScreen")}
+            >
+              <Text style={{ color: "#1895b9" }}> Register</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={{ marginTop: 40, color: "red", textAlign: "center" }}>
+            {error}
+          </Text>
         </View>
-        <Text style={{ marginTop: 40, color: "red", textAlign: "center" }}>
-          {error}
-        </Text>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

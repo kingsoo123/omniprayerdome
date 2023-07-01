@@ -58,9 +58,7 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
                 {single?.user}
               </Text>
               <Text style={styles.when}>{single?.time}</Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("SinglePrayerRequestScreen")}
-              >
+              <TouchableOpacity>
                 <Text style={styles.prayerRequest}>{single?.request}</Text>
               </TouchableOpacity>
 
@@ -73,26 +71,25 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
                   marginTop: 20,
                 }}
               >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <TouchableOpacity>
+                <TouchableOpacity>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Icon
                       name="heart"
                       type="material-community"
                       iconStyle={{ color: "#1895b9" }}
                       size={24}
                     />
-                  </TouchableOpacity>
 
-                  <Text
-                    style={{
-                      marginLeft: 5,
-                      color: theme.theme === "light" ? "#000000" : "#ffffff",
-                    }}
-                  >
-                    {single?.likes}
-                  </Text>
-                </View>
-
+                    <Text
+                      style={{
+                        marginLeft: 5,
+                        color: theme.theme === "light" ? "#000000" : "#ffffff",
+                      }}
+                    >
+                      {single?.likes}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
                 <View
                   style={{
                     flexDirection: "row",
@@ -114,7 +111,7 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
                       color: theme.theme === "light" ? "#000000" : "#ffffff",
                     }}
                   >
-                    {single?.replies}
+                    {single?.responses?.length}
                   </Text>
                 </View>
               </View>
@@ -163,13 +160,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     paddingHorizontal: 10,
-    marginTop: 20,
-    paddingBottom: 50,
   },
   username: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "500",
     letterSpacing: 1,
+    marginTop: 10,
   },
   when: {
     color: "gray",

@@ -5,11 +5,15 @@ import {
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Icon } from "react-native-elements";
-import { TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
+import { TouchableOpacity } from "react-native";
+import { db } from "../firebase/firebase-config";
+import { addDoc, collection } from "firebase/firestore/lite";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const tagsPrayer = [
   { title: "Deliverance", id: 0 },
@@ -28,6 +32,33 @@ const tagsPrayer = [
 
 const NewRequestModal = ({ setShowModal }) => {
   const theme = useSelector((state) => state.switch);
+  const collectionRef = collection(db, "prayer_request");
+  const [done, setDone] = useState("");
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  console.log(name, "DDDD");
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const value = await AsyncStorage.getItem("displayName");
+        setName(value);
+      } catch (e) {
+        // error reading value
+        console.log(e);
+      }
+    };
+    getData();
+  }, []);
+  const [prayerRequest, setPrayerRequest] = useState({
+    likes: 0,
+    replies: 0,
+    request: "God is the greates and the King of kings.",
+    responses: [],
+  });
+
+  console.log(prayerRequest);
 
   const [selected, setSelected] = useState([]);
   console.log(selected);
@@ -39,6 +70,16 @@ const NewRequestModal = ({ setShowModal }) => {
     }
   };
 
+  const createNewPrayerRequest = async () => {
+    setLoading(true);
+    try {
+      setDone("Prayer request added");
+      await addDoc(collectionRef, { ...prayerRequest, user: name });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View
@@ -89,6 +130,9 @@ const NewRequestModal = ({ setShowModal }) => {
               padding: 5,
               paddingVertical: 20,
             }}
+            onChangeText={(text) =>
+              setPrayerRequest({ ...prayerRequest, request: text })
+            }
           />
 
           <View>
@@ -132,8 +176,9 @@ const NewRequestModal = ({ setShowModal }) => {
             </View>
           </View>
         </View>
+        <Text style={{ color: "#ffffff", textAlign: "center" }}>{done}</Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => createNewPrayerRequest()}>
           <View
             style={{
               ...styles.button1,
@@ -142,12 +187,6 @@ const NewRequestModal = ({ setShowModal }) => {
               alignItems: "center",
             }}
           >
-            <Icon
-              name="send"
-              type="material"
-              iconStyle={{ color: "#ffffff" }}
-              size={30}
-            />
             <Text
               style={{
                 fontWeight: "500",
@@ -155,7 +194,11 @@ const NewRequestModal = ({ setShowModal }) => {
                 fontSize: 20,
               }}
             >
-              Create
+              {loading ? (
+                <ActivityIndicator size="small" color="#ffffff" />
+              ) : (
+                "Create"
+              )}
             </Text>
           </View>
         </TouchableOpacity>
