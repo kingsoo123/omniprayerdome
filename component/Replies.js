@@ -21,12 +21,12 @@ const Replies = ({ signle, id }) => {
   const [isClicked, setIsClicked] = useState(false);
   // const collectionRef = collection(db, "prayer_request");
 
-  console.log(likeId?.likesIdArray, "MMMMMMM....");
+  //console.log(likeId?.likesIdArray, "MMMMMMM....");
 
   const getAllUpdatedPrayer = (id) => {
-    // console.log(signle, "PROPPSSSS....");
+    console.log(signle, "PROPPSSSS....");
 
-    const mapSingle = signle.map(({ likes, response_id, ...prayer }) => ({
+    const mapSingle = commenters.map(({ likes, response_id, ...prayer }) => ({
       ...prayer,
       likes: id === response_id ? likes + 1 : likes,
       response_id: response_id,
@@ -42,7 +42,7 @@ const Replies = ({ signle, id }) => {
         const docRef = doc(db, "prayer_request", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          console.log(docSnap.data()?.responses, "YESSS DOCCSSSS");
+          console.log(docSnap.data()?.responses, "YESSS DOC");
           setCommenters(docSnap.data()?.responses);
         } else {
           console.log("Document does not exist");
@@ -51,26 +51,29 @@ const Replies = ({ signle, id }) => {
         console.log(error);
       }
     };
-
     getPrayer();
   }, [isClicked, signle]);
 
   const addLikes = async (resp_id) => {
-    setIsClicked(true);
-    console.log(resp_id, "PROPPSSSS....");
-    dispatch(addNewLikesId(resp_id));
-    dispatch(isLikedAction());
-    if (!likeId?.likesIdArray?.includes(resp_id)) {
-      newLike = {
-        responses: getAllUpdatedPrayer(resp_id),
-      };
-      const prayerDoc = doc(db, "prayer_request", id);
-      await updateDoc(prayerDoc, newLike);
-      console.log("heheheh");
-      setIsClicked(false);
-    } else {
-      console.log("ID USEDDDD");
-      setIsClicked(false);
+    try {
+      setIsClicked(true);
+      console.log(resp_id, likeId?.likesIdArray, "CHECKING ID ARRAY....");
+      dispatch(addNewLikesId(resp_id));
+      dispatch(isLikedAction());
+      if (!likeId?.likesIdArray?.includes(resp_id)) {
+        newLike = {
+          responses: getAllUpdatedPrayer(resp_id),
+        };
+        const prayerDoc = doc(db, "prayer_request", id);
+        await updateDoc(prayerDoc, newLike);
+        console.log("heheheh");
+        setIsClicked(false);
+      } else {
+        console.log("ID USEDDDD");
+        setIsClicked(false);
+      }
+    } catch (error) {
+      console.log(error, "FIND THE BUG");
     }
   };
 

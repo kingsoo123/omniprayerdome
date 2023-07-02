@@ -21,13 +21,13 @@ import { doc, updateDoc, getDoc } from "firebase/firestore/lite";
 const SinglePrayerRequestScreen = ({ navigation, route }) => {
   const theme = useSelector((state) => state.switch);
   const prayer = route.params.data;
-  const [single, setPrayer] = useState([]);
+  const [single, setPrayer] = useState(prayer.responses);
   const [prayerComment, setPrayerComment] = useState("");
   const [name, setName] = useState("");
   const [isClicked, setIsClicked] = useState(false);
   const ref = useRef();
 
-  console.log(single, "STATEEEEEEEE");
+  //console.log(single, "STATEEEEEEEE");
 
   useEffect(() => {
     const getPrayer = async () => {
@@ -36,7 +36,7 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
         const docRef = doc(db, "prayer_request", prayer.id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          console.log(docSnap.data(), "YESSS DOCCSSSS");
+          console.log(docSnap.data(), "YESSS DOCCSSSS from single");
           setPrayer(docSnap.data());
         } else {
           console.log("Document does not exist");

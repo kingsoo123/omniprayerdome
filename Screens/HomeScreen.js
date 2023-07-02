@@ -54,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [prayerComment, setPrayerComment] = useState("");
 
-  console.log(postTag, "PRAYYYY");
+  //console.log(postTag, "PRAYYYY");
 
   useEffect(() => {
     const getPrayerRequest = async () => {
