@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView,
-  Dimensions,
+  ScrollView,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import Constants from "expo-constants";
@@ -21,29 +21,13 @@ import { doc, updateDoc, getDoc } from "firebase/firestore/lite";
 const SinglePrayerRequestScreen = ({ navigation, route }) => {
   const theme = useSelector((state) => state.switch);
   const prayer = route.params.data;
-  const [single, setPrayer] = useState(prayer);
+  const [single, setPrayer] = useState([]);
   const [prayerComment, setPrayerComment] = useState("");
   const [name, setName] = useState("");
   const [isClicked, setIsClicked] = useState(false);
   const ref = useRef();
 
-  //console.log(prayer.id, "STATEEEEEEEE");
-
-  const contributePrayers = async (id, prayer, response) => {
-    response.push({
-      request: prayer,
-      likes: 0,
-      user: name,
-      response_id: uuidv4(),
-    });
-    const newComment = {
-      responses: response,
-    };
-
-    const prayerDoc = doc(db, "prayer_request", id);
-    await updateDoc(prayerDoc, newComment);
-    setIsClicked(false);
-  };
+  console.log(single, "STATEEEEEEEE");
 
   useEffect(() => {
     const getPrayer = async () => {
@@ -52,18 +36,39 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
         const docRef = doc(db, "prayer_request", prayer.id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          //console.log(docSnap.data(), "YESSS DOCCSSSS");
+          console.log(docSnap.data(), "YESSS DOCCSSSS");
           setPrayer(docSnap.data());
         } else {
           console.log("Document does not exist");
         }
       } catch (error) {
-        console.log(error);
-        setIsClicked(false);
+        console.log(error, "ERRRSSSS");
       }
     };
     getPrayer();
   }, [isClicked]);
+
+  const contributePrayers = async (id, prayer, response) => {
+    setIsClicked(true);
+
+    try {
+      response.push({
+        request: prayer,
+        likes: 0,
+        user: name,
+        response_id: uuidv4(),
+      });
+      const newComment = {
+        responses: response,
+      };
+
+      const prayerDoc = doc(db, "prayer_request", id);
+      await updateDoc(prayerDoc, newComment);
+      setIsClicked(false);
+    } catch (error) {
+      setIsClicked(false);
+    }
+  };
 
   useEffect(() => {
     const getData = async () => {
@@ -84,120 +89,121 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
       style={{
         backgroundColor: theme.theme === "light" ? "#ffffff" : "#000000",
         flex: 1,
-        justifyContent: "space-between",
       }}
     >
-      <View style={{ top: Constants.statusBarHeight }}>
-        <View style={styles.headerView}>
-          <Icon
-            name="keyboard-backspace"
-            type="material-community"
-            iconStyle={{ color: "#1895b9" }}
-            onPress={() => navigation.goBack()}
-          />
-        </View>
-        <View>
-          <View style={styles.requestView}>
-            <View style={{ flexDirection: "row" }}>
-              <Avatar
-                rounded
-                size={55}
-                source={{
-                  uri: "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png",
-                }}
-              />
-            </View>
-            <View style={{ marginLeft: 20, paddingRight: 30 }}>
-              <Text
-                style={{
-                  ...styles.username,
-                  color: theme.theme === "light" ? "#000000" : "#ffffff",
-                }}
-              >
-                {single?.user}
-              </Text>
-              <Text style={styles.when}>{single?.time}</Text>
-              <TouchableOpacity>
-                <Text style={styles.prayerRequest}>{single?.request}</Text>
-              </TouchableOpacity>
-
-              <View
-                style={{
-                  width: "100%",
-                  height: 20,
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  marginTop: 20,
-                }}
-              >
+      <ScrollView>
+        <View style={{ top: Constants.statusBarHeight, paddingBottom: 200 }}>
+          <View style={styles.headerView}>
+            <Icon
+              name="keyboard-backspace"
+              type="material-community"
+              iconStyle={{ color: "#1895b9" }}
+              onPress={() => navigation.goBack()}
+            />
+          </View>
+          <View>
+            <View style={styles.requestView}>
+              <View style={{ flexDirection: "row" }}>
+                <Avatar
+                  rounded
+                  size={55}
+                  source={{
+                    uri: "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png",
+                  }}
+                />
+              </View>
+              <View style={{ marginLeft: 20, paddingRight: 30 }}>
+                <Text
+                  style={{
+                    ...styles.username,
+                    color: theme.theme === "light" ? "#000000" : "#ffffff",
+                  }}
+                >
+                  {prayer?.user}
+                </Text>
+                <Text style={styles.when}>{prayer?.time}</Text>
                 <TouchableOpacity>
+                  <Text style={styles.prayerRequest}>{prayer?.request}</Text>
+                </TouchableOpacity>
+
+                <View
+                  style={{
+                    width: "100%",
+                    height: 20,
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    marginTop: 20,
+                  }}
+                >
+                  <TouchableOpacity>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Icon
+                        name="heart"
+                        type="material-community"
+                        iconStyle={{ color: "#1895b9" }}
+                        size={24}
+                      />
+
+                      <Text
+                        style={{
+                          marginLeft: 5,
+                          color:
+                            theme.theme === "light" ? "#000000" : "#ffffff",
+                        }}
+                      >
+                        {prayer?.likes}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
                   <View
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
+                      marginLeft: 20,
                     }}
                   >
                     <Icon
-                      name="heart"
+                      name="repeat-variant"
                       type="material-community"
                       iconStyle={{ color: "#1895b9" }}
-                      size={24}
+                      size={26}
                     />
 
                     <Text
                       style={{
                         marginLeft: 5,
+                        marginTop: 5,
                         color: theme.theme === "light" ? "#000000" : "#ffffff",
                       }}
                     >
-                      {single?.likes}
+                      {prayer?.responses?.length}
                     </Text>
                   </View>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginLeft: 20,
-                  }}
-                >
-                  <Icon
-                    name="repeat-variant"
-                    type="material-community"
-                    iconStyle={{ color: "#1895b9" }}
-                    size={26}
-                  />
-
-                  <Text
-                    style={{
-                      marginLeft: 5,
-                      marginTop: 5,
-                      color: theme.theme === "light" ? "#000000" : "#ffffff",
-                    }}
-                  >
-                    {single?.responses?.length}
-                  </Text>
                 </View>
+                <Replies
+                  signle={single}
+                  id={prayer.id}
+                  // setPrayer={setPrayer}
+                  // setIsClicked={setIsClicked}
+                />
               </View>
-              <Replies
-                signle={prayer.responses}
-                id={prayer.id}
-                // setPrayer={setPrayer}
-                // setIsClicked={setIsClicked}
-              />
             </View>
           </View>
         </View>
-      </View>
-
+      </ScrollView>
       <View
         style={{
           ...styles.textInput1,
           flexDirection: "row",
           alignItems: "center",
-          position: "absolute",
-          bottom: Dimensions.get("window").height / 30,
-          right: 0,
+          // position: "absolute",
+          // bottom: Dimensions.get("window").height / 30,
+          // right: 0,
         }}
       >
         <TextInput
@@ -223,7 +229,6 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
           />
         </TouchableOpacity>
       </View>
-      {/* </KeyboardAvoidingView> */}
     </KeyboardAvoidingView>
   );
 };

@@ -20,6 +20,7 @@ import { db } from "../firebase/firebase-config";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore/lite";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { addNewLikesId, isLikedAction } from "../Slice/LikesSlice";
+import { postTagAction } from "../Slice/NotificationSlice";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 
@@ -42,6 +43,7 @@ const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.switch);
   const likeId = useSelector((state) => state.likes);
+  const postTag = useSelector((state) => state.notification);
   const BadgeIcon = withBadge(0)(Icon);
   const [showModal, setShowModal] = useState(false);
   const [prayerData, setPrayerData] = useState([]);
@@ -52,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [prayerComment, setPrayerComment] = useState("");
 
-  //console.log(uuidv4(), "PRAYYYY");
+  console.log(postTag, "PRAYYYY");
 
   useEffect(() => {
     const getPrayerRequest = async () => {
@@ -87,7 +89,6 @@ const HomeScreen = ({ navigation }) => {
 
   const addLikes = async (id, like) => {
     let newLike = { likes: like };
-    console.log(newLike.likes, like, id, "NEW LIKE");
     dispatch(addNewLikesId(id));
     dispatch(isLikedAction());
 
@@ -184,9 +185,10 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.trendingView}>
           {tagsPrayer.map((item) => (
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("PrayersByTag", { data: prayerData })
-              }
+              onPress={() => {
+                dispatch(postTagAction(item.title));
+                navigation.navigate("PrayersByTag", { data: prayerData });
+              }}
               key={item.id}
             >
               <View style={styles.tags}>
@@ -339,7 +341,6 @@ const HomeScreen = ({ navigation }) => {
 
                       <TouchableOpacity
                         onPress={() => {
-                          console.log(prayer.id, "PRAYERRRR");
                           setGetPrayerUser(prayer.id);
                         }}
                       >
@@ -388,11 +389,11 @@ const HomeScreen = ({ navigation }) => {
                         />
                         <TouchableOpacity
                           onPress={() => {
-                            console.log(
-                              prayer.id,
-                              prayerComment,
-                              prayer.responses.length
-                            );
+                            // console.log(
+                            //   prayer.id,
+                            //   prayerComment,
+                            //   prayer.responses.length
+                            // );
                             setIsClicked(true);
                             contributePrayers(
                               prayer.id,
@@ -418,7 +419,11 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
-      <TouchableOpacity onPress={() => setShowModal(true)}>
+      <TouchableOpacity
+        onPress={() => {
+          setShowModal(true);
+        }}
+      >
         <View
           style={{
             ...styles.newRequest,

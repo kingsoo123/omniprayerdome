@@ -7,6 +7,8 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
+  Dimensions,
 } from "react-native";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -47,7 +49,7 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.smallText}>If you have an account</Text>
         </View>
         <View style={styles.bottomView}>
-          <View style={{ marginTop: 30 }}>
+          <View style={{ marginTop: 10 }}>
             <View
               style={{
                 ...styles.textInput1,
@@ -158,23 +160,25 @@ export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "red",
-    height: "100%",
+    backgroundColor: "#ffffff",
+    flex: 1,
   },
   topView: {
-    height: "30%",
+    height:
+      Platform.OS === "ios" ? "30%" : Platform.OS === "android" ? "30%" : "",
     backgroundColor: "#1D2F3D",
     justifyContent: "flex-end",
     paddingVertical: 20,
     paddingHorizontal: 20,
   },
   bottomView: {
-    height: "70%",
+    flex: 1,
+    // Platform.OS === "ios" ? "50%" : Platform.OS === "android" ? "50%" : "",
     backgroundColor: "#ffffff",
     paddingVertical: 30,
   },
   bitText: {
-    fontSize: 48,
+    fontSize: Platform.OS === "ios" ? 48 : Platform.OS === "android" ? 30 : "",
     color: "#ffffff",
     fontWeight: "bold",
   },

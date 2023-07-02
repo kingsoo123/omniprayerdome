@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Icon } from "react-native-elements";
 import { useSelector } from "react-redux";
 import { TouchableOpacity } from "react-native";
@@ -36,6 +36,7 @@ const NewRequestModal = ({ setShowModal }) => {
   const [done, setDone] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const ref = useRef();
 
   console.log(name, "DDDD");
 
@@ -122,6 +123,7 @@ const NewRequestModal = ({ setShowModal }) => {
         >
           <TextInput
             placeholder="Enter your prayer request here..."
+            ref={ref}
             multiline={true}
             numberOfLines={10}
             style={{
@@ -177,7 +179,12 @@ const NewRequestModal = ({ setShowModal }) => {
         </View>
         <Text style={{ color: "#ffffff", textAlign: "center" }}>{done}</Text>
 
-        <TouchableOpacity onPress={() => createNewPrayerRequest()}>
+        <TouchableOpacity
+          onPress={() => {
+            createNewPrayerRequest();
+            ref.current.clear();
+          }}
+        >
           <View
             style={{
               ...styles.button1,

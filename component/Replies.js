@@ -10,22 +10,18 @@ import { Icon, Avatar } from "react-native-elements";
 import { addNewLikesId, isLikedAction } from "../Slice/LikesSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { db } from "../firebase/firebase-config";
-import {
-  updateDoc,
-  doc,
-  collection,
-  getDoc,
-  arrayUnion,
-} from "firebase/firestore/lite";
+import { updateDoc, doc, getDoc } from "firebase/firestore/lite";
 
-const Replies = ({ signle, id, setPrayer, setIsClicked }) => {
+const Replies = ({ signle, id }) => {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.switch);
   const likeId = useSelector((state) => state.likes);
-  const commenters = signle;
-  //signle?.responses
-
+  //const commenters = signle;
+  const [commenters, setCommenters] = useState(signle);
+  const [isClicked, setIsClicked] = useState(false);
   // const collectionRef = collection(db, "prayer_request");
+
+  console.log(likeId?.likesIdArray, "MMMMMMM....");
 
   const getAllUpdatedPrayer = (id) => {
     // console.log(signle, "PROPPSSSS....");
@@ -39,38 +35,42 @@ const Replies = ({ signle, id, setPrayer, setIsClicked }) => {
     return mapSingle;
   };
 
-  const getPrayer = async () => {
-    try {
-      //console.log(prayer.id, "IDDDDDDDDDD");
-      const docRef = doc(db, "prayer_request", id);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        //console.log(docSnap.data(), "YESSS DOCCSSSS");
-        setPrayer(docSnap.data());
-      } else {
-        console.log("Document does not exist");
+  useEffect(() => {
+    const getPrayer = async () => {
+      try {
+        console.log(id, "IDDDDDDDDDD");
+        const docRef = doc(db, "prayer_request", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          console.log(docSnap.data()?.responses, "YESSS DOCCSSSS");
+          setCommenters(docSnap.data()?.responses);
+        } else {
+          console.log("Document does not exist");
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-      setIsClicked(false);
-    }
-  };
+    };
+
+    getPrayer();
+  }, [isClicked, signle]);
 
   const addLikes = async (resp_id) => {
+    setIsClicked(true);
+    console.log(resp_id, "PROPPSSSS....");
     dispatch(addNewLikesId(resp_id));
     dispatch(isLikedAction());
-    console.log(likeId?.likesIdArray, "MMMMMMM....");
     if (!likeId?.likesIdArray?.includes(resp_id)) {
-      console.log(resp_id, "PROPPSSSS....");
-
       newLike = {
         responses: getAllUpdatedPrayer(resp_id),
       };
       const prayerDoc = doc(db, "prayer_request", id);
       await updateDoc(prayerDoc, newLike);
+      console.log("heheheh");
       setIsClicked(false);
     } else {
-      dispatch(addNewLikesId(id));
+      console.log("ID USEDDDD");
+      setIsClicked(false);
     }
   };
 
@@ -129,8 +129,7 @@ const Replies = ({ signle, id, setPrayer, setIsClicked }) => {
                       comment.response_id,
                       "FROM COMP"
                     );
-                    //getAllUpdatedPrayer(comment.response_id);
-                    //getPrayer();
+
                     addLikes(
                       comment.response_id,
                       comment.likes,
