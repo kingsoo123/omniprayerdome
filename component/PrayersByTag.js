@@ -97,7 +97,7 @@ const PrayersByTag = ({ navigation }) => {
                   <Avatar
                     rounded
                     avatarStyle={styles.avatar}
-                    size={45}
+                    size={25}
                     source={{
                       uri: "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png",
                     }}
@@ -196,7 +196,7 @@ const PrayersByTag = ({ navigation }) => {
                         style={{
                           flexDirection: "row",
                           alignItems: "center",
-                          marginLeft: 30,
+                          marginLeft: 15,
                         }}
                       >
                         <Icon
@@ -208,7 +208,7 @@ const PrayersByTag = ({ navigation }) => {
 
                         <Text
                           style={{
-                            marginLeft: 10,
+                            marginLeft: 3,
                             color:
                               theme.theme === "light" ? "#000000" : "#ffffff",
                           }}
@@ -274,7 +274,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     letterSpacing: 1,
-    marginTop: 10,
   },
   when: {
     color: "gray",

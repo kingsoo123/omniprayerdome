@@ -7,6 +7,8 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
+  ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import { Icon } from "react-native-elements";
@@ -62,8 +64,17 @@ const RegisterScreen = ({ navigation }) => {
           <Text style={styles.bitText}>an account</Text>
           <Text style={styles.smallText}>If you have an account</Text>
         </View>
-        <View style={styles.bottomView}>
-          <View style={{ marginTop: 30 }}>
+        <ScrollView style={styles.bottomView}>
+          <View
+            style={{
+              marginTop:
+                Platform.OS === "ios"
+                  ? 30
+                  : Platform.OS === "android"
+                  ? 10
+                  : "",
+            }}
+          >
             <View
               style={{
                 ...styles.textInput1,
@@ -155,12 +166,17 @@ const RegisterScreen = ({ navigation }) => {
               </View>
             </TouchableOpacity>
           </View>
+          <Text style={{ marginTop: 10, color: "red", textAlign: "center" }}>
+            {error}
+          </Text>
+          <Text style={{ marginTop: 10, color: "green", textAlign: "center" }}>
+            {done}
+          </Text>
           <View
             style={{
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              marginTop: 40,
             }}
           >
             <Text style={{ fontWeight: "500" }}>Have an account?</Text>
@@ -171,13 +187,7 @@ const RegisterScreen = ({ navigation }) => {
               <Text style={{ color: "#1895b9" }}> Login</Text>
             </TouchableOpacity>
           </View>
-          <Text style={{ marginTop: 40, color: "green", textAlign: "center" }}>
-            {done}
-          </Text>
-          <Text style={{ marginTop: 40, color: "red", textAlign: "center" }}>
-            {error}
-          </Text>
-        </View>
+        </ScrollView>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -187,11 +197,12 @@ export default RegisterScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "red",
-    height: "100%",
+    backgroundColor: "#ffffff",
+    flex: 1,
   },
   topView: {
-    height: "30%",
+    height:
+      Platform.OS === "ios" ? "30%" : Platform.OS === "android" ? "25%" : "",
     backgroundColor: "#1D2F3D",
     justifyContent: "flex-end",
     paddingVertical: 20,
@@ -203,7 +214,7 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   bitText: {
-    fontSize: 48,
+    fontSize: Platform.OS === "ios" ? 48 : Platform.OS === "android" ? 30 : "",
     color: "#ffffff",
     fontWeight: "bold",
   },
@@ -215,17 +226,17 @@ const styles = StyleSheet.create({
     borderColor: "#86939e",
     marginHorizontal: 20,
     borderRadius: 5,
-    marginBottom: 20,
+    marginBottom: 10,
     paddingLeft: 10,
     backgroundColor: "white",
-    padding: 20,
+    padding: Platform.OS === "ios" ? 20 : Platform.OS === "android" ? 10 : "",
   },
   button1: {
     borderWidth: 0.2,
     marginHorizontal: 20,
     borderRadius: 5,
     backgroundColor: "#1895b9",
-    padding: 20,
+    padding: Platform.OS === "ios" ? 20 : Platform.OS === "android" ? 10 : "",
     marginTop: 10,
   },
 });

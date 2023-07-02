@@ -23,6 +23,9 @@ import { addNewLikesId, isLikedAction } from "../Slice/LikesSlice";
 import { postTagAction } from "../Slice/NotificationSlice";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
+import { fontSizer } from "../utils";
+
+const { width, height } = Dimensions.get("window");
 
 const tagsPrayer = [
   { title: "Deliverance", id: 0 },
@@ -466,7 +469,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   bitText: {
-    fontSize: 30,
+    fontSize: fontSizer(width),
     color: "#ffffff",
     fontWeight: "500",
   },
@@ -515,6 +518,7 @@ const styles = StyleSheet.create({
     //   left: Dimensions.get("window").width / 4,
     bottom: 60,
     right: Dimensions.get("window").width / 4,
+    left: Dimensions.get("window").width / 4,
     justifyContent: "center",
     alignItems: "center",
     elevation: 10,

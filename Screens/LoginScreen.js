@@ -147,7 +147,7 @@ const LoginScreen = ({ navigation }) => {
               <Text style={{ color: "#1895b9" }}> Register</Text>
             </TouchableOpacity>
           </View>
-          <Text style={{ marginTop: 40, color: "red", textAlign: "center" }}>
+          <Text style={{ marginTop: 5, color: "red", textAlign: "center" }}>
             {error}
           </Text>
         </View>
@@ -193,14 +193,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingLeft: 10,
     backgroundColor: "white",
-    padding: 20,
+    padding: Platform.OS === "ios" ? 20 : Platform.OS === "android" ? 10 : "",
   },
   button1: {
     borderWidth: 0.2,
     marginHorizontal: 20,
     borderRadius: 5,
     backgroundColor: "#1895b9",
-    padding: 20,
+    padding: Platform.OS === "ios" ? 20 : Platform.OS === "android" ? 10 : "",
     marginTop: 10,
   },
 });
