@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
+  StatusBar,
 } from "react-native";
 import { Icon, withBadge, Avatar } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
@@ -61,10 +62,15 @@ const HomeScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [prayerComment, setPrayerComment] = useState("");
 
+  console.log(new Date(), "DATE");
+
   useEffect(() => {
     const getPrayerRequest = async () => {
       const data = await getDocs(collectionRef);
-      const mapData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      const mapData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
       setPrayerData(mapData);
     };
     getPrayerRequest();
@@ -131,6 +137,10 @@ const HomeScreen = ({ navigation }) => {
           backgroundColor: theme.theme === "light" ? "#ffffff" : "#000000",
         }}
       >
+        <StatusBar
+          barStyle={theme.theme === "light" ? "dark-content" : "light-content"}
+          backgroundColor={"white"}
+        />
         <View style={styles.headerView}>
           <Icon
             name="menu"
@@ -266,7 +276,7 @@ const HomeScreen = ({ navigation }) => {
                             theme.theme === "light" ? "#000000" : "#ffffff",
                         }}
                       >
-                        {prayer.time}
+                        {prayer.when.toDate().toDateString()}
                       </Text>
                       <TouchableOpacity
                         onPress={() =>

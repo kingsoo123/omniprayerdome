@@ -53,10 +53,12 @@ const NewRequestModal = ({ setShowModal }) => {
     };
     getData();
   }, []);
+
   const [prayerRequest, setPrayerRequest] = useState({
     likes: 0,
     request: "God is the greates and the King of kings.",
     responses: [],
+    when: new Date(),
   });
 
   //console.log(name, prayerRequest.request, "DDDD");
