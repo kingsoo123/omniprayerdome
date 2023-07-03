@@ -10,6 +10,8 @@ import {
 import React, { useEffect, useState, useRef } from "react";
 import { Icon } from "react-native-elements";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { notificationAction } from "../Slice/NotificationSlice";
 import { TouchableOpacity } from "react-native";
 import { db } from "../firebase/firebase-config";
 import { addDoc, collection } from "firebase/firestore/lite";
@@ -31,14 +33,13 @@ const tagsPrayer = [
 ];
 
 const NewRequestModal = ({ setShowModal }) => {
+  const dispatch = useDispatch();
   const theme = useSelector((state) => state.switch);
   const collectionRef = collection(db, "prayer_request");
   const [done, setDone] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const ref = useRef();
-
-  console.log(name, "DDDD");
 
   useEffect(() => {
     const getData = async () => {
@@ -58,10 +59,12 @@ const NewRequestModal = ({ setShowModal }) => {
     responses: [],
   });
 
-  console.log(prayerRequest);
+  //console.log(name, prayerRequest.request, "DDDD");
+
+  //console.log(prayerRequest);
 
   const [selected, setSelected] = useState([]);
-  console.log(selected);
+  //console.log(selected);
   const handleSelect = (item) => {
     if (selected.includes(item)) {
       setSelected(selected);
@@ -76,6 +79,9 @@ const NewRequestModal = ({ setShowModal }) => {
       setDone("Prayer request added");
       await addDoc(collectionRef, { ...prayerRequest, user: name });
       setLoading(false);
+      dispatch(
+        notificationAction({ message: prayerRequest.request, poster: name })
+      );
     } catch (error) {
       setLoading(false);
     }
@@ -131,9 +137,12 @@ const NewRequestModal = ({ setShowModal }) => {
               padding: 5,
               paddingVertical: 20,
             }}
-            onChangeText={(text) =>
-              setPrayerRequest({ ...prayerRequest, request: text })
-            }
+            onChangeText={(text) => {
+              setPrayerRequest({ ...prayerRequest, request: text });
+              setTimeout(() => {
+                setDone("");
+              }, 5000);
+            }}
           />
 
           <View>

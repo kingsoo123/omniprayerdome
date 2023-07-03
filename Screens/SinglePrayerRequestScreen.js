@@ -92,7 +92,7 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
       }}
     >
       <ScrollView>
-        <View style={{ top: Constants.statusBarHeight, paddingBottom: 200 }}>
+        <View style={{ top: Constants.statusBarHeight, paddingBottom: 100 }}>
           <View style={styles.headerView}>
             <Icon
               name="keyboard-backspace"

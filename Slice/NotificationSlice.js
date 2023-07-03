@@ -13,8 +13,12 @@ export const notificationSlice = createSlice({
     notificationAction: (state, action) => {
       console.log(action, "FROM NOTIFICATION ACTION");
       let newArr = [];
-      newArr.push(action.payload);
-      state.newPostArray = [...new Set([...state.likesIdArray, ...newArr])];
+      if (!action.payload) {
+        state.newPostArray = newArr;
+      } else {
+        newArr.push(action.payload);
+        state.newPostArray = [...new Set([...state.newPostArray, ...newArr])];
+      }
     },
   },
 });
