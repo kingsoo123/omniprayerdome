@@ -39,7 +39,11 @@ const NewRequestModal = ({ setShowModal }) => {
   const [done, setDone] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState([]);
+
   const ref = useRef();
+
+  console.log(selected, "SELECTED DATA");
 
   useEffect(() => {
     const getData = async () => {
@@ -64,8 +68,6 @@ const NewRequestModal = ({ setShowModal }) => {
   //console.log(name, prayerRequest.request, "DDDD");
 
   //console.log(prayerRequest);
-
-  const [selected, setSelected] = useState([]);
   //console.log(selected);
   const handleSelect = (item) => {
     if (selected.includes(item)) {
@@ -79,7 +81,11 @@ const NewRequestModal = ({ setShowModal }) => {
     setLoading(true);
     try {
       setDone("Prayer request added");
-      await addDoc(collectionRef, { ...prayerRequest, user: name });
+      await addDoc(collectionRef, {
+        ...prayerRequest,
+        user: name,
+        tags: selected,
+      });
       setLoading(false);
       dispatch(
         notificationAction({ message: prayerRequest.request, poster: name })

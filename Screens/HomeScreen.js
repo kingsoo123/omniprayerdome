@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, Fragment } from "react";
 import {
   StyleSheet,
   Text,
@@ -56,8 +56,10 @@ const HomeScreen = ({ navigation }) => {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [prayerData, setPrayerData] = useState([]);
   const [getPrayerUser, setGetPrayerUser] = useState("");
+  const [bibleQuote, setBibleQuote] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const collectionRef = collection(db, "prayer_request");
+  const bibleQuoteCollection = collection(db, "bibleQuote");
   const [isClicked, setIsClicked] = useState(false);
   const [name, setName] = useState("");
   const [prayerComment, setPrayerComment] = useState("");
@@ -75,6 +77,19 @@ const HomeScreen = ({ navigation }) => {
     };
     getPrayerRequest();
   }, [showModal, isClicked, likeId?.isLiked]);
+
+  useEffect(() => {
+    const getBibleQuote = async () => {
+      const data = await getDocs(bibleQuoteCollection);
+      const mapBibleQuote = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      console.log(mapBibleQuote, "BIBLE");
+      setBibleQuote(mapBibleQuote);
+    };
+    getBibleQuote();
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -172,11 +187,12 @@ const HomeScreen = ({ navigation }) => {
           }}
           style={styles.greetings}
         >
-          <Text style={styles.bitText}>
-            And said to them, it is written, my house shall be called the house
-            of prayer
-          </Text>
-          <Text style={{ color: "white" }}>(Matthew 21:13)</Text>
+          {bibleQuote?.map((quote, id) => (
+            <Fragment key={id}>
+              <Text style={styles.bitText}>{quote.bibleText}</Text>
+              <Text style={{ color: "white" }}>({quote.bibleVerse})</Text>
+            </Fragment>
+          ))}
         </ImageBackground>
 
         <ScrollView
@@ -211,7 +227,10 @@ const HomeScreen = ({ navigation }) => {
               <TouchableOpacity
                 onPress={() => {
                   dispatch(postTagAction(item.title));
-                  navigation.navigate("PrayersByTag", { data: prayerData });
+                  navigation.navigate("PrayersByTag", {
+                    // data: prayerData,
+                    title: item.title,
+                  });
                 }}
                 key={item.id}
               >
@@ -424,11 +443,6 @@ const HomeScreen = ({ navigation }) => {
                           />
                           <TouchableOpacity
                             onPress={() => {
-                              // console.log(
-                              //   prayer.id,
-                              //   prayerComment,
-                              //   prayer.responses.length
-                              // );
                               setIsClicked(true);
                               contributePrayers(
                                 prayer.id,
@@ -555,7 +569,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // top: Dimensions.get("window").height / 1,
     //   left: Dimensions.get("window").width / 4,
-    bottom: 40,
+    bottom: 20,
     right: Dimensions.get("window").width / 4,
     left: Dimensions.get("window").width / 4,
     justifyContent: "center",
