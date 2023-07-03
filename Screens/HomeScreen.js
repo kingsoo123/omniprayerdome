@@ -119,6 +119,7 @@ const HomeScreen = ({ navigation }) => {
       likes: 0,
       user: name,
       response_id: uuidv4(),
+      when: new Date(),
     });
     const newComment = {
       responses: response,
@@ -276,7 +277,7 @@ const HomeScreen = ({ navigation }) => {
                             theme.theme === "light" ? "#000000" : "#ffffff",
                         }}
                       >
-                        {prayer.when.toDate().toDateString()}
+                        {prayer.when?.toDate()?.toDateString()}
                       </Text>
                       <TouchableOpacity
                         onPress={() =>
@@ -537,6 +538,7 @@ const styles = StyleSheet.create({
   when: {
     color: "gray",
     letterSpacing: 1,
+    fontSize: 11,
   },
   prayerRequest: {
     color: "#1895b9",
@@ -553,7 +555,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // top: Dimensions.get("window").height / 1,
     //   left: Dimensions.get("window").width / 4,
-    bottom: 60,
+    bottom: 40,
     right: Dimensions.get("window").width / 4,
     left: Dimensions.get("window").width / 4,
     justifyContent: "center",

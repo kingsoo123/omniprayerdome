@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import React from "react";
+import { Icon } from "react-native-elements";
 import { notificationAction } from "../Slice/NotificationSlice";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -24,11 +25,18 @@ const NotificationModal = ({ setShowNotificationModal }) => {
           backgroundColor: theme.theme === "light" ? "#1895b9" : "#000000",
         }}
       >
-        <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View style={styles.headerView}>
+            <Icon
+              name="keyboard-backspace"
+              type="material-community"
+              iconStyle={{ color: "#ffffff" }}
+              onPress={() => setShowNotificationModal(false)}
+            />
+          </View>
           <TouchableOpacity
             onPress={() => {
               dispatch(notificationAction(null));
-              setShowNotificationModal(false);
             }}
           >
             <View style={styles.smallCircle}>

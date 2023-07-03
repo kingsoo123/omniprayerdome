@@ -121,7 +121,9 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
                 >
                   {prayer?.user}
                 </Text>
-                <Text style={styles.when}>{prayer?.time}</Text>
+                <Text style={styles.when}>
+                  {prayer?.when?.toDate()?.toDateString()}
+                </Text>
                 <TouchableOpacity>
                   <Text style={styles.prayerRequest}>{prayer?.request}</Text>
                 </TouchableOpacity>
@@ -256,6 +258,7 @@ const styles = StyleSheet.create({
   when: {
     color: "gray",
     letterSpacing: 1,
+    fontSize: 11,
   },
   prayerRequest: {
     color: "#1895b9",

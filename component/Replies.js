@@ -103,7 +103,9 @@ const Replies = ({ signle, id }) => {
               >
                 {comment?.user}
               </Text>
-              <Text style={styles.when}>{comment?.time}</Text>
+              <Text style={styles.when}>
+                {comment?.when?.toDate()?.toDateString()}
+              </Text>
               <TouchableOpacity
               // onPress={() =>
               //   navigation.navigate("SinglePrayerRequestScreen", {
@@ -226,6 +228,7 @@ const styles = StyleSheet.create({
   when: {
     color: "gray",
     letterSpacing: 1,
+    fontSize: 11,
   },
   prayerRequest: {
     color: "#1895b9",
