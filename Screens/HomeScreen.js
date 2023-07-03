@@ -20,7 +20,14 @@ import { Icon, withBadge, Avatar } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
 import NewRequestModal from "../component/NewRequestModal";
 import { db } from "../firebase/firebase-config";
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore/lite";
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  doc,
+  orderBy,
+  query,
+} from "firebase/firestore/lite";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { addNewLikesId, isLikedAction } from "../Slice/LikesSlice";
 import { postTagAction } from "../Slice/NotificationSlice";
@@ -59,7 +66,10 @@ const HomeScreen = ({ navigation }) => {
   const [bibleQuote, setBibleQuote] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const collectionRef = collection(db, "prayer_request");
-  const bibleQuoteCollection = collection(db, "bibleQuote");
+  const bibleQuoteCollection = query(
+    collection(db, "bibleQuote"),
+    orderBy("when", "asc")
+  );
   const [isClicked, setIsClicked] = useState(false);
   const [name, setName] = useState("");
   const [prayerComment, setPrayerComment] = useState("");
