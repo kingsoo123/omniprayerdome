@@ -198,6 +198,15 @@ const Replies = ({ signle, id }) => {
                       iconStyle={{ color: "#1895b9" }}
                       size={26}
                     />
+                    <Text
+                      style={{
+                        marginLeft: 5,
+                        marginTop: 4,
+                        color: theme.theme === "light" ? "#000000" : "#ffffff",
+                      }}
+                    >
+                      delete
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
