@@ -40,6 +40,8 @@ const PrayersByTag = ({ navigation, route }) => {
         mapData.filter((prayer) => {
           if (prayer.tags.includes(route?.params?.title)) {
             return prayer;
+          } else if (route?.params?.title === "All") {
+            return mapData;
           }
         })
       );
@@ -130,7 +132,9 @@ const PrayersByTag = ({ navigation, route }) => {
                     >
                       {prayer.user}
                     </Text>
-                    <Text style={styles.when}>{prayer.time}</Text>
+                    <Text style={styles.when}>
+                      {prayer.when?.toDate()?.toDateString()}
+                    </Text>
                     <TouchableOpacity
                       onPress={() =>
                         navigation.navigate("SinglePrayerRequestScreen", {

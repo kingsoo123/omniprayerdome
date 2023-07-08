@@ -51,6 +51,7 @@ const tagsPrayer = [
   { title: "Loving kindness", id: 9 },
   { title: "Forgiveness", id: 10 },
   { title: "Testimonies", id: 11 },
+  { title: "All", id: 12 },
 ];
 
 const HomeScreen = ({ navigation }) => {
@@ -65,16 +66,17 @@ const HomeScreen = ({ navigation }) => {
   const [getPrayerUser, setGetPrayerUser] = useState("");
   const [bibleQuote, setBibleQuote] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const collectionRef = collection(db, "prayer_request");
-  const bibleQuoteCollection = query(
-    collection(db, "bibleQuote"),
-    orderBy("when", "asc")
+  const collectionRef = query(
+    collection(db, "prayer_request"),
+    orderBy("when", "desc")
   );
+  const bibleQuoteCollection = collection(db, "bibleQuote");
+
   const [isClicked, setIsClicked] = useState(false);
   const [name, setName] = useState("");
   const [prayerComment, setPrayerComment] = useState("");
 
-  console.log(new Date(), "DATE");
+  //console.log(new Date(), "DATE");
 
   useEffect(() => {
     const getPrayerRequest = async () => {
@@ -99,7 +101,7 @@ const HomeScreen = ({ navigation }) => {
       setBibleQuote(mapBibleQuote);
     };
     getBibleQuote();
-  }, []);
+  }, [showModal, isClicked, likeId?.isLiked]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -107,8 +109,6 @@ const HomeScreen = ({ navigation }) => {
       setRefreshing(false);
     }, 2000);
   }, []);
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     const getData = async () => {
