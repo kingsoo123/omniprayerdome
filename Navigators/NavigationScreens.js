@@ -5,6 +5,7 @@ import RegisterScreen from "../Screens/RegisterScreen";
 import HomeScreen from "../Screens/HomeScreen";
 import { useSelector } from "react-redux";
 import DrawerNavigator from "./DrawerNavigator";
+import OpeningScreen from "../Screens/OpeningScreen";
 
 const Stacks = createNativeStackNavigator();
 
@@ -27,6 +28,13 @@ const NavigationScreens = () => {
           </>
         ) : (
           <>
+            <Stacks.Screen
+              name="OpeningScreen"
+              component={OpeningScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
             <Stacks.Screen
               name="LoginScreen"
               component={LoginScreen}
