@@ -25,6 +25,7 @@ const LoginScreen = ({ navigation }) => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [hide, setHide] = useState(true);
 
   const handleSubmit = () => {
     setLoading(true);
@@ -83,16 +84,20 @@ const LoginScreen = ({ navigation }) => {
                 placeholder="Password"
                 style={{ marginLeft: 10, flex: 1 }}
                 underlineColorAndroid="transparent"
+                secureTextEntry={hide}
+                w
                 onChangeText={(text) => {
                   setError("");
                   setUserData({ ...userData, password: text });
                 }}
               />
-              <Icon
-                name="visibility-off"
-                type="material"
-                iconStyle={{ color: "#1895b9" }}
-              />
+              <TouchableOpacity onPress={() => setHide(!hide)}>
+                <Icon
+                  name={hide ? "visibility-off" : "visibility"}
+                  type="material"
+                  iconStyle={{ color: "#1895b9" }}
+                />
+              </TouchableOpacity>
             </View>
             <View
               style={{
