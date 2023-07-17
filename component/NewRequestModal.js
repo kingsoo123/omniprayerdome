@@ -6,6 +6,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { Icon } from "react-native-elements";
@@ -117,7 +118,7 @@ const NewRequestModal = ({ setShowModal }) => {
           style={{
             fontWeight: "bold",
             fontSize: 24,
-            marginTop: 30,
+            marginTop: 10,
             color: "#ffffff",
           }}
         >
@@ -129,7 +130,12 @@ const NewRequestModal = ({ setShowModal }) => {
             width: "100%",
             padding: 10,
             backgroundColor: "#ffffff",
-            height: 400,
+            height:
+              Platform.OS === "ios"
+                ? 400
+                : Platform.OS === "android"
+                ? "70%"
+                : 400,
             borderRadius: 20,
             marginTop: 20,
             justifyContent: "space-between",
@@ -143,7 +149,13 @@ const NewRequestModal = ({ setShowModal }) => {
             style={{
               letterSpacing: 3,
               padding: 5,
-              paddingVertical: 20,
+              paddingVertical: 10,
+              marginTop:
+                Platform.OS === "ios"
+                  ? 20
+                  : Platform.OS === "android"
+                  ? -50
+                  : 20,
             }}
             onChangeText={(text) => {
               setPrayerRequest({ ...prayerRequest, request: text });
@@ -174,7 +186,7 @@ const NewRequestModal = ({ setShowModal }) => {
                         : "#EFEFEF",
                       borderRadius: 15,
                       padding: 2,
-                      marginTop: 10,
+                      marginTop: 5,
                     }}
                   >
                     <Text
@@ -251,7 +263,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     backgroundColor: "#ffffff",
-    borderRadius: "100%",
+    borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
   },

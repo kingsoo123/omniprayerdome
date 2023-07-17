@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
 
   smallCircle: {
     backgroundColor: "#ffffff",
-    borderRadius: "50%",
+    borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
     padding: 10,

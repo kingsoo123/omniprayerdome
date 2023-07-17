@@ -15,10 +15,10 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StatusBar,
+  Pressable,
 } from "react-native";
 import { Icon, withBadge, Avatar } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
-import NewRequestModal from "../component/NewRequestModal";
 import { db } from "../firebase/firebase-config";
 import {
   collection,
@@ -34,6 +34,7 @@ import { postTagAction } from "../Slice/NotificationSlice";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { fontSizer } from "../utils";
+import NewRequestModal from "../component/NewRequestModal";
 import NotificationModal from "../component/NotificationModal";
 
 const { width, height } = Dimensions.get("window");
@@ -478,28 +479,26 @@ const HomeScreen = ({ navigation }) => {
             </View>
           </View>
         </ScrollView>
-        <TouchableOpacity
+
+        <Pressable
+          style={{
+            ...styles.newRequest,
+
+            backgroundColor: "#1895b9",
+          }}
           onPress={() => {
             setShowModal(true);
           }}
         >
-          <View
+          <Text
             style={{
-              ...styles.newRequest,
-
-              backgroundColor: "#1895b9",
+              fontWeight: "bold",
+              color: "#ffffff",
             }}
           >
-            <Text
-              style={{
-                fontWeight: "bold",
-                color: "#ffffff",
-              }}
-            >
-              Make a prayer request
-            </Text>
-          </View>
-        </TouchableOpacity>
+            Make a prayer request
+          </Text>
+        </Pressable>
 
         {showModal && <NewRequestModal setShowModal={setShowModal} />}
         {showNotificationModal && (
@@ -584,7 +583,6 @@ const styles = StyleSheet.create({
     left: Dimensions.get("window").width / 4,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 10,
   },
   textInput1: {
     borderWidth: 0.2,
