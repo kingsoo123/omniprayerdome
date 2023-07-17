@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "#1895b9",
     padding: 20,
-    marginTop: 10,
+    marginTop: Platform.OS === "ios" ? 10 : Platform.OS === "android" ? 0 : 10,
   },
   trendingView: {
     flexDirection: "row",
