@@ -66,7 +66,7 @@ const NewRequestModal = ({ setShowModal }) => {
     when: new Date(),
   });
 
-  //console.log(name, prayerRequest.request, "DDDD");
+  console.log(name, prayerRequest.request, "DDDD");
 
   //console.log(prayerRequest);
   //console.log(selected);
