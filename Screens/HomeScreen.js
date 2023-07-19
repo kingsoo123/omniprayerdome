@@ -16,6 +16,8 @@ import {
   Keyboard,
   StatusBar,
   Pressable,
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Icon, withBadge, Avatar } from "react-native-elements";
 import { useSelector, useDispatch } from "react-redux";
@@ -89,7 +91,7 @@ const HomeScreen = ({ navigation }) => {
       setPrayerData(mapData);
     };
     getPrayerRequest();
-  }, [showModal, isClicked, likeId?.isLiked]);
+  }, [showModal, isClicked, likeId?.isLiked, refreshing]);
 
   useEffect(() => {
     const getBibleQuote = async () => {
@@ -157,7 +159,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <KeyboardAvoidingView style={styles.container}>
       <SafeAreaView
         style={{
           ...styles.container,
@@ -487,7 +489,11 @@ const HomeScreen = ({ navigation }) => {
             backgroundColor: "#1895b9",
           }}
           onPress={() => {
-            setShowModal(true);
+            Platform.OS === "ios"
+              ? setShowModal(true)
+              : Platform.OS === "android"
+              ? navigation.navigate("newPrayerRequest")
+              : null;
           }}
         >
           <Text
@@ -507,7 +513,7 @@ const HomeScreen = ({ navigation }) => {
           />
         )}
       </SafeAreaView>
-    </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
