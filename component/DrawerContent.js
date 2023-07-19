@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { View, Text, StyleSheet, Switch, TouchableOpacity } from "react-native";
 import { Icon, Avatar } from "react-native-elements";
@@ -7,12 +7,25 @@ import { lightAction, darkAction } from "../Slice/SwitchTheme";
 import { logOut } from "../Slice/AuthSlice";
 import { auth } from "../firebase/firebase-config";
 import { signOut } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DrawerContent = (props) => {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.switch);
   const [isEnabled, setIsEnabled] = useState(false);
-  // console.log(props, "PROPSSS");
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const value = await AsyncStorage.getItem("displayName");
+        setName(value);
+      } catch (e) {
+        // error reading value
+      }
+    };
+    getData();
+  }, []);
 
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState);
@@ -26,12 +39,10 @@ const DrawerContent = (props) => {
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
-        console.log("Sign-out successful.");
         dispatch(logOut());
       })
       .catch((error) => {
         // An error happened.
-        console.log("An error happened.");
       });
   };
 
@@ -58,10 +69,10 @@ const DrawerContent = (props) => {
               <Text
                 style={{ fontWeight: "bold", color: "white", fontSize: 18 }}
               >
-                John Doe
+                {name}
               </Text>
               <Text style={{ color: "white", fontSize: 14 }}>
-                Johndoe@gmail.com
+                Great to have you back!
               </Text>
             </View>
           </View>

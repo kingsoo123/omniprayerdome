@@ -32,7 +32,6 @@ const LoginScreen = ({ navigation }) => {
     signInWithEmailAndPassword(auth, userData.email, userData.password)
       .then((userCred) => {
         const user = userCred.user;
-        console.log(user, "USERSSS");
         dispatch(signIn());
         setLoading(false);
       })

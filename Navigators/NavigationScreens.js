@@ -12,7 +12,6 @@ const Stacks = createNativeStackNavigator();
 const NavigationScreens = () => {
   const auth = useSelector((state) => state.auth);
 
-  console.log(auth.isAuth, "AUTHHHHHH");
   return (
     <NavigationContainer>
       <Stacks.Navigator>

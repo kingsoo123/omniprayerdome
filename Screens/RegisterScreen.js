@@ -34,7 +34,6 @@ const RegisterScreen = ({ navigation }) => {
       await AsyncStorage.setItem("displayName", value);
     } catch (e) {
       // saving error
-      console.log(e, "ASYN ERROR");
     }
   };
 
@@ -43,14 +42,11 @@ const RegisterScreen = ({ navigation }) => {
     createUserWithEmailAndPassword(auth, userData.email, userData.password)
       .then((userCred) => {
         const user = userCred.user;
-        console.log(user, "REGISTRATION");
         setLoading(false);
         setDone(`Success! Go to login.`);
         storeData(userData.username);
-        //navigation.navigate("LoginScreen");
       })
       .catch((error) => {
-        console.log(error.message, "EERRRRRRR");
         setError(error.message);
         setLoading(false);
       });

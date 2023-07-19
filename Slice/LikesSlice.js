@@ -8,7 +8,6 @@ export const likeSlice = createSlice({
   },
   reducers: {
     addNewLikesId: (state, action) => {
-      //console.log(action, "FROM SLICE LIKES");
       let newArr = [];
       newArr.push(action.payload);
       state.likesIdArray = [...new Set([...state.likesIdArray, ...newArr])];

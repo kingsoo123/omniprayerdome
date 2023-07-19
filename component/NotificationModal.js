@@ -16,7 +16,6 @@ const NotificationModal = ({ setShowNotificationModal }) => {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.switch);
   const newNotification = useSelector((state) => state.notification);
-  console.log(newNotification, "from notification....");
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View

@@ -27,23 +27,15 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
   const [isClicked, setIsClicked] = useState(false);
   const ref = useRef();
 
-  //console.log(single, "STATEEEEEEEE");
-
   useEffect(() => {
     const getPrayer = async () => {
       try {
-        //console.log(prayer.id, "IDDDDDDDDDD");
         const docRef = doc(db, "prayer_request", prayer.id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          console.log(docSnap.data(), "YESSS DOCCSSSS from single");
           setPrayer(docSnap.data());
-        } else {
-          console.log("Document does not exist");
         }
-      } catch (error) {
-        console.log(error, "ERRRSSSS");
-      }
+      } catch (error) {}
     };
     getPrayer();
   }, [isClicked]);
@@ -77,7 +69,6 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
         setName(value);
       } catch (e) {
         // error reading value
-        console.log(e);
       }
     };
     getData();
@@ -217,7 +208,6 @@ const SinglePrayerRequestScreen = ({ navigation, route }) => {
         />
         <TouchableOpacity
           onPress={() => {
-            //console.log(prayer.id, single.responses, "FROMMMMMMMMMM");
             contributePrayers(prayer.id, prayerComment, single.responses);
             ref.current.clear();
             setIsClicked(true);

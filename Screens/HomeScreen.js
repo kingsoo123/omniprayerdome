@@ -12,8 +12,6 @@ import {
   ImageBackground,
   RefreshControl,
   ActivityIndicator,
-  TouchableWithoutFeedback,
-  Keyboard,
   StatusBar,
   Pressable,
   Platform,
@@ -79,8 +77,6 @@ const HomeScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [prayerComment, setPrayerComment] = useState("");
 
-  //console.log(new Date(), "DATE");
-
   useEffect(() => {
     const getPrayerRequest = async () => {
       const data = await getDocs(collectionRef);
@@ -100,7 +96,6 @@ const HomeScreen = ({ navigation }) => {
         ...doc.data(),
         id: doc.id,
       }));
-      console.log(mapBibleQuote, "BIBLE");
       setBibleQuote(mapBibleQuote);
     };
     getBibleQuote();
@@ -120,7 +115,6 @@ const HomeScreen = ({ navigation }) => {
         setName(value);
       } catch (e) {
         // error reading value
-        console.log(e);
       }
     };
     getData();

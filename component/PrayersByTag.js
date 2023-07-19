@@ -23,19 +23,10 @@ const PrayersByTag = ({ navigation, route }) => {
   const [isClicked, setIsClicked] = useState(false);
   const collectionRef = collection(db, "prayer_request");
 
-  console.log(route.params.title, prayerData, "PRAYYYY ROUTE");
-
   useEffect(() => {
     const getPrayerRequest = async () => {
       const data = await getDocs(collectionRef);
       const mapData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      console.log(mapData[0].tags, "MAP DATA");
-
-      // const filteredMapData = mapData.map((prayer) => {
-      //   if (prayer.tags.includes(route.params.title)) {
-      //     return prayer;
-      //   }
-      // });
       setPrayerData(
         mapData.filter((prayer) => {
           if (prayer.tags.includes(route?.params?.title)) {
@@ -51,7 +42,6 @@ const PrayersByTag = ({ navigation, route }) => {
 
   const addLikes = async (id, like) => {
     let newLike = { likes: like };
-    console.log(newLike.likes, like, id, "NEW LIKE");
     dispatch(addNewLikesId(id));
     dispatch(isLikedAction());
     if (!likeId?.likesIdArray?.includes(id)) {
@@ -155,7 +145,6 @@ const PrayersByTag = ({ navigation, route }) => {
                     >
                       <TouchableOpacity
                         onPress={() => {
-                          console.log(prayer.id, prayer.likes, "FROM TAGAAA");
                           setIsClicked(true);
                           addLikes(prayer.id, prayer.likes);
                         }}

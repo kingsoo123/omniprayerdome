@@ -44,8 +44,6 @@ const NewRequestModal = ({ setShowModal }) => {
 
   const ref = useRef();
 
-  console.log(selected, "SELECTED DATA");
-
   useEffect(() => {
     const getData = async () => {
       try {
@@ -53,7 +51,6 @@ const NewRequestModal = ({ setShowModal }) => {
         setName(value);
       } catch (e) {
         // error reading value
-        console.log(e);
       }
     };
     getData();
@@ -66,10 +63,6 @@ const NewRequestModal = ({ setShowModal }) => {
     when: new Date(),
   });
 
-  console.log(name, prayerRequest.request, "DDDD");
-
-  //console.log(prayerRequest);
-  //console.log(selected);
   const handleSelect = (item) => {
     if (selected.includes(item)) {
       setSelected(selected);
@@ -173,8 +166,6 @@ const NewRequestModal = ({ setShowModal }) => {
               {tagsPrayer.map((item) => (
                 <TouchableOpacity
                   onPress={() => {
-                    console.log(item.title, "ITEMSSSS");
-                    //setSelected(item.title)
                     handleSelect(item.title);
                   }}
                   key={item.id}

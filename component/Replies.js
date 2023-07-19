@@ -16,16 +16,10 @@ const Replies = ({ signle, id }) => {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.switch);
   const likeId = useSelector((state) => state.likes);
-  //const commenters = signle;
   const [commenters, setCommenters] = useState(signle);
   const [isClicked, setIsClicked] = useState(false);
-  // const collectionRef = collection(db, "prayer_request");
-
-  //console.log(likeId?.likesIdArray, "MMMMMMM....");
 
   const getAllUpdatedPrayer = (id) => {
-    console.log(signle, "PROPPSSSS....");
-
     const mapSingle = commenters.map(({ likes, response_id, ...prayer }) => ({
       ...prayer,
       likes: id === response_id ? likes + 1 : likes,
@@ -38,18 +32,12 @@ const Replies = ({ signle, id }) => {
   useEffect(() => {
     const getPrayer = async () => {
       try {
-        console.log(id, "IDDDDDDDDDD");
         const docRef = doc(db, "prayer_request", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          console.log(docSnap.data()?.responses, "YESSS DOC");
           setCommenters(docSnap.data()?.responses);
-        } else {
-          console.log("Document does not exist");
         }
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     };
     getPrayer();
   }, [isClicked, signle]);
@@ -57,7 +45,6 @@ const Replies = ({ signle, id }) => {
   const addLikes = async (resp_id) => {
     try {
       setIsClicked(true);
-      console.log(resp_id, likeId?.likesIdArray, "CHECKING ID ARRAY....");
       dispatch(addNewLikesId(resp_id));
       dispatch(isLikedAction());
       if (!likeId?.likesIdArray?.includes(resp_id)) {
@@ -66,15 +53,11 @@ const Replies = ({ signle, id }) => {
         };
         const prayerDoc = doc(db, "prayer_request", id);
         await updateDoc(prayerDoc, newLike);
-        console.log("heheheh");
         setIsClicked(false);
       } else {
-        console.log("ID USEDDDD");
         setIsClicked(false);
       }
-    } catch (error) {
-      console.log(error, "FIND THE BUG");
-    }
+    } catch (error) {}
   };
 
   return (
@@ -127,14 +110,6 @@ const Replies = ({ signle, id }) => {
               >
                 <TouchableOpacity
                   onPress={() => {
-                    console.log(
-                      comment.likes,
-                      comment.request,
-                      comment.user,
-                      comment.response_id,
-                      "FROM COMP"
-                    );
-
                     addLikes(
                       comment.response_id,
                       comment.likes,

@@ -43,8 +43,6 @@ const NewPrayerRequest = ({ navigation }) => {
 
   const ref = useRef();
 
-  console.log(selected, "SELECTED DATA");
-
   useEffect(() => {
     const getData = async () => {
       try {
@@ -52,7 +50,6 @@ const NewPrayerRequest = ({ navigation }) => {
         setName(value);
       } catch (e) {
         // error reading value
-        console.log(e);
       }
     };
     getData();
@@ -65,18 +62,16 @@ const NewPrayerRequest = ({ navigation }) => {
     when: new Date(),
   });
 
-  //console.log(prayerRequest);
-  //console.log(selected);
   const handleSelect = (item) => {
     if (selected.includes(item)) {
-      setSelected(selected);
+      const removeItem = selected.filter((value) => value !== item);
+      setSelected(removeItem);
     } else {
       setSelected([...selected, item]);
     }
   };
 
-  const createNewPrayerRequest = async () => {
-    console.log(loading, name, prayerRequest, "DDDDssss");
+  async function createNewPrayerRequest() {
     try {
       setDone("Prayer request added");
       await addDoc(collectionRef, {
@@ -91,11 +86,10 @@ const NewPrayerRequest = ({ navigation }) => {
       ref.current.clear();
       navigation.navigate("HomeScreen");
       setSelected([]);
-      console.log("done requesting::::::::");
     } catch (error) {
       setLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
     if (loading) {
@@ -170,8 +164,6 @@ const NewPrayerRequest = ({ navigation }) => {
               {tagsPrayer.map((item) => (
                 <TouchableOpacity
                   onPress={() => {
-                    console.log(item.title, "ITEMSSSS");
-                    //setSelected(item.title)
                     handleSelect(item.title);
                   }}
                   key={item.id}

@@ -11,7 +11,6 @@ export const notificationSlice = createSlice({
       state.postTag = action.payload;
     },
     notificationAction: (state, action) => {
-      console.log(action, "FROM NOTIFICATION ACTION");
       let newArr = [];
       if (!action.payload) {
         state.newPostArray = newArr;
