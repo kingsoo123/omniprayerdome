@@ -36,7 +36,7 @@ const LoginScreen = ({ navigation }) => {
         setLoading(false);
       })
       .catch((error) => {
-        setError(`Check the info you `);
+        setError(`Check the info you typed`);
         setLoading(false);
       });
   };
