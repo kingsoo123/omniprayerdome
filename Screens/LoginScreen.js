@@ -44,7 +44,7 @@ const LoginScreen = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <View style={styles.topView}>
-          <Text style={styles.bitText}> in to your</Text>
+          <Text style={styles.bitText}>Sign in to your</Text>
           <Text style={styles.bitText}>Account</Text>
           <Text style={styles.smallText}>If you have an account</Text>
         </View>
