@@ -144,7 +144,7 @@ const LoginScreen = ({ navigation }) => {
               marginTop: 40,
             }}
           >
-            <Text style={{ fontWeight: "500" }}>Don't have an account?</Text>
+            <Text style={{ fontWeight: "500" }}>Don't have an ?</Text>
             <TouchableOpacity
               onPress={() => navigation.navigate("RegisterScreen")}
             >
