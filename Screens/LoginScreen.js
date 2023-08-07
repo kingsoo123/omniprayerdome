@@ -108,7 +108,7 @@ const LoginScreen = ({ navigation }) => {
               }}
             >
               <Text style={{ fontWeight: "500", color: "#1895b9" }}>
-                Forgot ?
+                Forgot password?
               </Text>
             </View>
             <TouchableOpacity onPress={() => handleSubmit()}>
