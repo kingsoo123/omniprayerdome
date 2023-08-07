@@ -45,7 +45,7 @@ const LoginScreen = ({ navigation }) => {
       <View style={styles.container}>
         <View style={styles.topView}>
           <Text style={styles.bitText}>Sign in to your</Text>
-          <Text style={styles.bitText}>Account</Text>
+          <Text style={styles.bitText}></Text>
           <Text style={styles.smallText}>If you have an account</Text>
         </View>
         <View style={styles.bottomView}>
