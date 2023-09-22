@@ -496,7 +496,7 @@ const HomeScreen = ({ navigation }) => {
               color: "#ffffff",
             }}
           >
-            Make a prayer request
+            Make a prayer
           </Text>
         </Pressable>
 
