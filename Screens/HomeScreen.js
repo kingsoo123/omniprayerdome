@@ -426,7 +426,9 @@ const HomeScreen = ({ navigation }) => {
                                     ? "#000000"
                                     : "#ffffff",
                               }}
-                            ></Text>
+                            >
+                              Pray
+                            </Text>
                           </View>
                         </TouchableOpacity>
                       </View>
