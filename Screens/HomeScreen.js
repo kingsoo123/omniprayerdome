@@ -267,7 +267,7 @@ const HomeScreen = ({ navigation }) => {
                 color: theme.theme === "light" ? "#000000" : "#ffffff",
               }}
             >
-              All Requests
+              Requests
             </Text>
 
             <View style={{ paddingBottom: 100 }}>
